@@ -3,11 +3,49 @@ const colection = [];
 const btnRec = document.getElementById("add-record");
 const btncover = document.getElementById('cover');
 const showcover = document.getElementById('coverShow');
+const btnformat = document.getElementById("format");
 
-// Variable global
+const upA = document.getElementById("sideA");
+const upB = document.getElementById("sideB");
+
+let lA = [];
+
+let lB = [];
+
+//audios
+
+
+upA.addEventListener('change', (e) => {
+    const files = Array.from(e.target.files);
+
+    lA = files; 
+});
+
+upB.addEventListener('change', (e) => {
+    const files = Array.from(e.target.files);
+
+    lB = files; 
+});
+
+//formato
+
+btnformat.addEventListener('change', function(e) {
+switch (btnformat.value) {
+    case "SP":
+    document.getElementById("formatShow").src = "txt_11.png";
+        break;
+    case "EP":
+    document.getElementById("formatShow").src = "txt_12.png";
+        break;
+    case "LP":
+        document.getElementById("formatShow").src = "txt_10.png";
+    break;
+}
+});
+
+//portada
+
 let imagenGlobal = null;
-
-
 
 btncover.addEventListener('change', function(e) {
     const archivo = e.target.files[0];
@@ -42,7 +80,7 @@ btncover.addEventListener('change', function(e) {
 });
 
 
-
+//añadir
 
 
 btnRec.addEventListener("click", () => {
@@ -50,12 +88,13 @@ btnRec.addEventListener("click", () => {
     const recArti = document.getElementById("artist").value;
     const recGenr = document.getElementById("genera").value;
     const recYear = document.getElementById("year").value;
-    const recform = document.getElementById("format").value;
+    const recAside = lA;
+    const recBside = lB;
+    const recform = btnformat.value;
     const recCover =  imagenGlobal;
 
 
-    const sA = [];
-    const sB = [];
+
 
     
 
@@ -65,7 +104,9 @@ btnRec.addEventListener("click", () => {
         genera: recGenr,
         year: recYear,
         format: recform,
-        cover: recCover,
+        cover: recCover,    
+        sideA: recAside,
+        sideB: recBside
 
     };
 

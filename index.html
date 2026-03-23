@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <title>Louan Record Player</title>
+<link rel="icon" href="icon.png" type="image/png">
 <link rel="stylesheet" href="mStyle.css">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -111,14 +112,14 @@
             <div>
                 <label class="caveat-brush-regular">Select your A side tracks</label>
                 <br>
-                <button id="sideA" class="caveat-brush-regular">Uploud Tracks</button>
+                <input id="sideA" class="caveat-brush-regular" type="file" accept="audio/*" multiple>
             </div>
             <br>
             <br>
              <div>
                 <label class="caveat-brush-regular">Select your B side tracks</label>
                 <br>
-                <button id="sideB" class="caveat-brush-regular">Uploud Tracks</button>
+                <input id="sideB" class="caveat-brush-regular" type="file" accept="audios*" multiple>
             </div>
         </div>
         <br>
@@ -126,24 +127,30 @@
         <br>
         <div>
             <div>
-                <label class="caveat-brush-regular">Introduce the Record's A Side Tracklist</label>
+                <label class="caveat-brush-regular">Introduce the Record's A Side Tracklist:</label>
                 <br>
                 <forms>
                     <p></p>
                 </forms>
                 <br>
-                <button id="sideA" class="caveat-brush-regular">Add Track</button>
+                <input  id="inpSB" class="caveat-brush-regular" id="genera" type="text" name="genera">
+                <br>
+                <br>
+                <button id="btnSA" class="caveat-brush-regular">Add Track</button>
             </div>
             <br>
             <br>
              <div>
-                <label class="caveat-brush-regular">Introduce the Record's A Side Tracklist</label>
+                <label class="caveat-brush-regular">Introduce the Record's A Side Tracklist:</label>
                 <br>
                 <forms>
                     <p></p>
                 </forms>
                 <br>
-                <button id="sideB" class="caveat-brush-regular">Add Track</button>
+                <input id="inpSB" class="caveat-brush-regular" id="genera" type="text" name="genera">
+                <br>
+                <br>
+                <button id="btnSB" class="caveat-brush-regular">Add Track</button>
             </div>
         </div>
         <br>
