@@ -1,0 +1,301 @@
+
+
+
+body {
+    margin: 0 auto;
+    padding: 0 auto;
+    background: #1b1b1b;
+    font-family: initial;
+    display: block;
+    justify-items: center;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+
+    font-family: "Eras Demi ITC";
+}
+
+
+.app {
+
+    width: 75%;
+    height: 750px;
+    background: #353535;
+    position: relative;
+
+    justify-content: center;
+    align-items: center;
+    border-radius: 70px;
+    transform: translate(0, 0);
+    transition: transform 0.3s ease;
+}
+
+/* Zona del tocadiscos */
+.player {
+    width: calc(412px * 1.5);
+    height: calc(274px * 1.5);
+    background-image: url("text_1.png");
+    background-repeat: no-repeat;
+    background-size: cover;
+
+    top: 50px;
+    left: 100px;
+    position: relative;
+    box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+   
+}
+.active1{
+    transform: translateX(16%);
+}
+.active2{
+    transform: translateX(-16%);
+}
+
+.active3{
+    transform: translateY(-16%);
+}
+
+
+
+.vinyl {
+    width: calc(244px * 1.5);
+    height: calc(244px * 1.5);
+    background-image: url("txt_3.png");
+    background-repeat: no-repeat;
+    background-size: cover;
+    
+    
+    position: absolute;
+    top: 20px;
+    left: 17px;
+
+    visibility: hidden;
+}
+
+.arm {
+    
+    width: calc(123px * 1.5);
+    height: calc(252px * 1.5);
+    background-image: url("txt_2.png");
+    background-repeat: no-repeat;
+    background-size: cover;
+    position: absolute;
+    right: 10px;
+    top: 17px;
+}
+.armholder {
+    background-image: url("txt_30.png");
+    width: calc(79px * 1.5);
+    height: calc(163px * 1.5);
+    background-repeat: no-repeat;
+    background-size: cover;
+    position: absolute; 
+    right: 28px;
+    top: 8px;
+}
+
+/* Controles */
+.controls {
+    position: absolute;
+    top: 475px;
+    left: 100px;
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
+
+.btn {
+    width: 48px;
+    height: 48px;
+    position: relative;
+}
+.btn:hover{
+    opacity: 0.4;
+}
+.btn:active{
+    opacity: 1;
+}
+
+
+/* Botón + */
+.add-btn {
+    position: absolute;
+    bottom: 30px;
+    left: 30px;
+    width: 70px;
+    height: 70px;
+   
+ 
+}
+
+.add-btn:hover{
+    opacity: 0.4;
+}
+.add-btn:active{
+    opacity: 1;
+}
+
+
+.icons {
+    position: absolute;
+    bottom: 30px;
+    right: 40px;
+    display: flex;
+    gap: 20px;
+}
+
+.icons img {
+    width: 70px;
+    height: 70px;
+   
+}
+
+.icons img:hover{
+    opacity: 0.4;
+}
+
+.icons img:active{
+    opacity: 1;
+}
+
+.menu {
+  position: fixed;
+  
+  color: white;
+  transition: transform 0.3s ease;
+  z-index: 1000;
+}
+
+.menu h2{
+    padding-left: 30px;
+    font-size: 3em;
+}
+
+.menu label{
+     font-size: 2em;
+    text-align: left;
+}
+
+/* IZQUIERDA */
+.left {
+  top: 0;
+  left: 0;
+  width: 475px;
+  height: 100%;
+ 
+  transform: translateX(-100%);
+
+  
+}
+
+.rec-form {
+    overflow-y: auto;
+  
+    
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    padding: 24px;
+ 
+  
+    
+    width: 85%;
+    height: 85%;
+
+ 
+}
+
+.menu input{
+    width: 325px;
+    height: 30px;
+    font-size: 1.5em;
+
+    border: none;
+    border-radius: 10px;
+}
+
+.menu button{
+    width: 325px;
+    height: 30px;
+    font-size: 1.5em;
+
+    border: none;
+    border-radius: 10px;
+}
+
+.menu button:hover{
+    width: 325px;
+    height: 30px;
+    font-size: 1.5em;
+
+    border: none;
+    border-radius: 10px;
+
+    opacity: 0.4;
+}
+
+.menu option{
+    width: 50px;
+    height: 5px;
+    font-size: 1em;
+
+    border: none;
+    border-radius: 10px;
+}
+
+.menu select{
+    width: 325px;
+    height: 30px;
+    font-size: 1.5em;
+
+    border: none;
+    border-radius: 10px;
+}
+
+.menu select:hover{
+    opacity: 0.4;
+}
+
+.menu input:hover{
+    opacity: 0.4;
+}
+
+
+
+.left.active {
+  transform: translateX(0);
+}
+
+/* DERECHA */
+.right {
+  top: 0;
+  right: 0;
+ 
+  width: 445px;
+  height: 100%;
+  transform: translateX(100%);
+}
+
+.right.active {
+  transform: translateX(0);
+}
+
+/* ABAJO */
+.bottom {
+     
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 315px;
+  transform: translateY(100%);
+}
+
+.bottom.active {
+  transform: translateY(0);
+}
+
+.caveat-brush-regular {
+  font-family: "Caveat Brush", cursive;
+  font-weight: 400;
+  font-style: normal;
+}

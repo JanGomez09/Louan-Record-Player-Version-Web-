@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Louan Record Player</title>
+<link rel="stylesheet" href="mStyle.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat+Brush&display=swap" rel="stylesheet">
+
+</head>
+<body>
+    <br>
+
+   
+<div id="app" class="app">
+
+    
+    <div class="player">
+        <div class="vinyl"></div>
+        <div class="armholder"></div>
+        <div class="arm"></div>
+    </div>
+
+    <div class="controls">
+        <img id="turns" src="txt_16.png" class="btn"></img>
+        <img id="rewin" src="txt_27.png" class="btn"></img>
+        <img id="backw" src="txt_18.png" class="btn"></img>
+        <img id="pause" src="txt_15.png"  class="btn"></img>
+        <img id="fordw" src="txt_17.png"  class="btn"></img>
+        <img id="advan"src="txt_26.png"  class="btn"></img>
+        <img id="break" src="txt_24.png" class="btn"></img>
+    </div>
+
+    <img id="add" src="txt_6.png" class="add-btn"></img>
+
+    <div class="icons">
+        <img id="colect" src="txt_4.png" ></img>
+        <img id="trackL" src="txt_31.png" ></img>
+        
+    </div>
+
+    
+
+</div>
+
+<div id="menuLeft" class="menu left" >
+    <div class="rec-form">
+
+        <h2 class="caveat-brush-regular" >Add a New Record</h2>
+        <div>
+            <label class="caveat-brush-regular">Select a Cover Image</label>
+            <br>
+            <input class="caveat-brush-regular" id="cover" type="file" accept="image/*">
+        </div>
+        <br>
+         <!--Portada-->
+        <br>
+        <div>
+            <img id="coverShow" src="txt_8.png" ></img>
+            <img id="formatShow" src="txt_10.png" ></img>
+        </div>
+        <br>
+        <!--Nombre-->
+        <br>
+        <div>
+            <label class="caveat-brush-regular">Record's Name</label>
+            <br>
+            <input class="caveat-brush-regular" id="name" type="text" name="name">
+        </div>
+        <br>
+         <!--Artista-->
+        <br>
+        <div>
+            <label class="caveat-brush-regular">Record's Artist</label>
+            <br>
+            <input class="caveat-brush-regular" id="artist" type="text" name="artist">
+        </div>
+        <br>  
+          <!--Genero-->  
+        <br>
+        <div>
+            <label class="caveat-brush-regular">Record's Genera</label>
+            <br>
+            <input class="caveat-brush-regular" id="genera" type="text" name="genera">
+        </div>
+        <br>
+         <!--Año-->
+        <br>
+        <div>
+            <label class="caveat-brush-regular">Record's Raelease Year</label>
+            <br>
+            <input class="caveat-brush-regular" id="year" type="number" name="year">
+        </div>
+        <br>
+          <!--Formato-->
+        <br>
+        <div>
+            <label class="caveat-brush-regular">Record's length</label>
+            <br>
+            <select class="caveat-brush-regular" id="format">
+                <option class="caveat-brush-regular" value="SP">Single Play</option>
+                <option class="caveat-brush-regular" value="EP">Extended Play</option>
+                <option class="caveat-brush-regular" value="LP">Long Play</option>
+            </select>
+        </div>
+        <br>
+          <!--Lados-->
+        <br>
+         <div>
+            <div>
+                <label class="caveat-brush-regular">Select your A side tracks</label>
+                <br>
+                <button id="sideA" class="caveat-brush-regular">Uploud Tracks</button>
+            </div>
+            <br>
+            <br>
+             <div>
+                <label class="caveat-brush-regular">Select your B side tracks</label>
+                <br>
+                <button id="sideB" class="caveat-brush-regular">Uploud Tracks</button>
+            </div>
+        </div>
+        <br>
+          <!--Tracklist-->
+        <br>
+        <div>
+            <div>
+                <label class="caveat-brush-regular">Introduce the Record's A Side Tracklist</label>
+                <br>
+                <forms>
+                    <p></p>
+                </forms>
+                <br>
+                <button id="sideA" class="caveat-brush-regular">Add Track</button>
+            </div>
+            <br>
+            <br>
+             <div>
+                <label class="caveat-brush-regular">Introduce the Record's A Side Tracklist</label>
+                <br>
+                <forms>
+                    <p></p>
+                </forms>
+                <br>
+                <button id="sideB" class="caveat-brush-regular">Add Track</button>
+            </div>
+        </div>
+        <br>
+    </div>
+    
+    <button id="add-record" class="caveat-brush-regular" style="
+    width: 350px;
+    height: 50px;
+    font-size: 1.5em;
+
+    margin: 20px;
+    border: none;
+    border-radius: 12px;
+    " >Add Record</button>
+</div>
+
+
+<div id="menuRight" class="menu right" >
+    
+    <h2 class="caveat-brush-regular">Tracklist</h2>
+    
+</div>
+
+
+<div id="menuBottom" class="menu bottom" >
+    
+    <h2 class="caveat-brush-regular">Your Collection</h2>
+
+    
+    
+</div>
+
+<script src="displey.js"></script>
+<script src="recordplayer.js"></script>
+</body>
+</html>
