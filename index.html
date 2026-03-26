@@ -12,7 +12,7 @@
 </head>
 <body>
     <br>
-
+    <br>
    
 <div id="app" class="app">
 
@@ -47,8 +47,9 @@
 
 <div id="menuLeft" class="menu left" >
     <div class="rec-form">
-
         <h2 class="caveat-brush-regular" >Add a New Record</h2>
+        <br>
+        <br>
         <div>
             <label class="caveat-brush-regular">Select a Cover Image</label>
             <br>
@@ -100,9 +101,11 @@
             <label class="caveat-brush-regular">Record's length</label>
             <br>
             <select class="caveat-brush-regular" id="format">
-                <option class="caveat-brush-regular" value="SP">Single Play</option>
-                <option class="caveat-brush-regular" value="EP">Extended Play</option>
                 <option class="caveat-brush-regular" value="LP">Long Play</option>
+                <option class="caveat-brush-regular" value="EP">Extended Play</option>
+                
+                <option class="caveat-brush-regular" value="SP">Single Play</option>
+                
             </select>
         </div>
         <br>
@@ -129,28 +132,28 @@
             <div>
                 <label class="caveat-brush-regular">Introduce the Record's A Side Tracklist:</label>
                 <br>
-                <forms>
-                    <p></p>
-                </forms>
+                <ul id="lsA" class="caveat-brush-regular">
+             
+                </ul>
                 <br>
-                <input  id="inpSB" class="caveat-brush-regular" id="genera" type="text" name="genera">
+                <input  id="inpSA" class="caveat-brush-regular" type="text" name="inpSA">
                 <br>
                 <br>
-                <button id="btnSA" class="caveat-brush-regular">Add Track</button>
+                <button id="btnSA" class="caveat-brush-regular" name="btnSA">Add Track</button>
             </div>
             <br>
             <br>
              <div>
                 <label class="caveat-brush-regular">Introduce the Record's A Side Tracklist:</label>
                 <br>
-                <forms>
-                    <p></p>
-                </forms>
+                <ul id="lsB" class="caveat-brush-regular">
+               
+                </ul>
                 <br>
-                <input id="inpSB" class="caveat-brush-regular" id="genera" type="text" name="genera">
+                <input id="inpSB" class="caveat-brush-regular" type="text" name="inpSB" >
                 <br>
                 <br>
-                <button id="btnSB" class="caveat-brush-regular">Add Track</button>
+                <button id="btnSB" class="caveat-brush-regular" name="btnSB">Add Track</button>
             </div>
         </div>
         <br>
@@ -176,11 +179,13 @@
 
 
 <div id="menuBottom" class="menu bottom" >
-    
     <h2 class="caveat-brush-regular">Your Collection</h2>
 
-    
-    
+    <div id="rec-colect" class="rec-colect">
+        
+        
+        
+    </div>
 </div>
 
 <script src="displey.js"></script>

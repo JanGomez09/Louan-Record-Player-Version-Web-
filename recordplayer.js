@@ -8,9 +8,70 @@ const btnformat = document.getElementById("format");
 const upA = document.getElementById("sideA");
 const upB = document.getElementById("sideB");
 
+
+
+
+const UtlA = document.getElementById("btnSA");
+const UtlB = document.getElementById("btnSB");
+
+
+
+
 let lA = [];
 
 let lB = [];
+
+let tsA = [];
+
+let tsB = [];
+
+let iA = 0;
+let iB = 0;
+//Tracklist
+
+UtlA.addEventListener('click', (e) => {
+
+    let inpSA = document.getElementById("inpSA").value;
+    
+
+    iA++
+    let song = "A";
+
+    song += iA + " " + inpSA;
+
+    tsA.push(song);
+
+ 
+
+    const slA = document.getElementById("lsA");
+    const newSongA = document.createElement('li');
+
+    newSongA.textContent = song;
+    slA.appendChild(newSongA);
+});
+
+
+UtlB.addEventListener('click', (e) => {
+
+    let inpSB = document.getElementById("inpSB").value;
+    
+
+    iB++
+    let song = "B";
+
+    song += iB + " " + inpSB;
+
+    tsB.push(song);
+
+
+
+    const slB = document.getElementById("lsB");
+    const newSongB = document.createElement('li');
+
+    newSongB.textContent = song;
+    slB.appendChild(newSongB);
+});
+
 
 //audios
 
@@ -90,6 +151,8 @@ btnRec.addEventListener("click", () => {
     const recYear = document.getElementById("year").value;
     const recAside = lA;
     const recBside = lB;
+    const trackA = tsA;
+    const trackB = tsB;
     const recform = btnformat.value;
     const recCover =  imagenGlobal;
 
@@ -106,13 +169,56 @@ btnRec.addEventListener("click", () => {
         format: recform,
         cover: recCover,    
         sideA: recAside,
-        sideB: recBside
+        sideB: recBside,
+        tracksA: trackA,
+        tracksB: trackB,
 
     };
 
-    
+    colection.push(record);
+
 
     console.log(record);
 
+    const cover = document.createElement('img');
+    const disc = document.createElement('img');
 
+   
+
+    const liPanelS = document.getElementById('menuBottom');
+    const liPanelD = liPanelS.querySelector('.rec-colect');
+    const liPanel = document.createElement('div');
+
+    liPanel.style = "flex: 0 0 auto;";
+    liPanelD.appendChild(liPanel);  
+
+    cover.src = recCover;
+    cover.id = recName;
+    cover.className = "recPanel";
+
+    if (recform == "LP") {
+        disc.src = "txt_10.png";
+    } else if (recform == "EP") {
+        disc.src = "txt_12.png";
+    } else if (recform == "SP") {
+        disc.src = "txt_11.png";
+    }
+    disc.id = recName + recform;
+    disc.className = 'discPanel';
+
+    
+    liPanel.appendChild(cover);
+    liPanel.appendChild(disc);
+
+    console.log(cover.id);
+    
+
+    iA = 0;
+    iB = 0;
+    imagenGlobal = null;
+
+    console.log(cover.src);
 }); 
+
+
+
