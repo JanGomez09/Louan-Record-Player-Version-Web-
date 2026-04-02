@@ -1,4 +1,6 @@
-const colection = [];
+// registro
+
+let colection = [];
 
 const btnRec = document.getElementById("add-record");
 const btncover = document.getElementById('cover');
@@ -7,9 +9,6 @@ const btnformat = document.getElementById("format");
 
 const upA = document.getElementById("sideA");
 const upB = document.getElementById("sideB");
-
-
-
 
 const UtlA = document.getElementById("btnSA");
 const UtlB = document.getElementById("btnSB");
@@ -54,7 +53,7 @@ UtlA.addEventListener('click', (e) => {
 UtlB.addEventListener('click', (e) => {
 
     let inpSB = document.getElementById("inpSB").value;
-    
+
 
     iB++
     let song = "B";
@@ -142,6 +141,7 @@ btncover.addEventListener('change', function(e) {
 
 
 //añadir
+let recIndex = 0;
 
 
 btnRec.addEventListener("click", () => {
@@ -156,12 +156,8 @@ btnRec.addEventListener("click", () => {
     const recform = btnformat.value;
     const recCover =  imagenGlobal;
 
-
-
-
-    
-
     const record = {
+        id: recIndex,
         name: recName,
         artist: recArti,
         genera: recGenr,
@@ -178,6 +174,7 @@ btnRec.addEventListener("click", () => {
     colection.push(record);
 
 
+
     console.log(record);
 
     const cover = document.createElement('img');
@@ -189,11 +186,12 @@ btnRec.addEventListener("click", () => {
     const liPanelD = liPanelS.querySelector('.rec-colect');
     const liPanel = document.createElement('div');
 
-    liPanel.style = "flex: 0 0 auto;";
+  
     liPanelD.appendChild(liPanel);  
 
     cover.src = recCover;
-    cover.id = recName;
+    liPanel.id = recName;
+    cover.id = "disc" + recIndex;
     cover.className = "recPanel";
 
     if (recform == "LP") {
@@ -207,7 +205,7 @@ btnRec.addEventListener("click", () => {
     disc.className = 'discPanel';
 
     
-    liPanel.appendChild(cover);
+    liPanel.appendChild(cover);     
     liPanel.appendChild(disc);
 
     console.log(cover.id);
@@ -218,7 +216,30 @@ btnRec.addEventListener("click", () => {
     imagenGlobal = null;
 
     console.log(cover.src);
+
+    recIndex++;
 }); 
 
+let currentRecord = null;
 
 
+document.addEventListener("click", function (e) {
+  const img = e.target.closest("img");
+
+  // Verifica que el id sea tipo "disc0", "disc1", etc.
+  if (img && /^disc\d+$/.test(img.id)) {
+
+    // Extraer el número del id
+    const idNumero = parseInt(img.id.replace("disc", ""), 10);
+
+    // Buscar en la colección usando el número
+    const found = colection.find(item => item.id === idNumero);
+
+    if (found) {
+      currentRecord = found;
+      console.log("Registro actual:", currentRecord);
+    } else {
+      console.log("No se encontró el registro");
+    }
+  }
+});

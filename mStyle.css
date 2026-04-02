@@ -61,11 +61,7 @@ body {
 .vinyl {
     width: calc(244px * 1.5);
     height: calc(244px * 1.5);
-    background-image: url("txt_3.png");
-    background-repeat: no-repeat;
-    background-size: cover;
-    
-    
+
     position: absolute;
     top: 20px;
     left: 17px;
@@ -77,9 +73,7 @@ body {
     
     width: calc(123px * 1.5);
     height: calc(252px * 1.5);
-    background-image: url("txt_2.png");
-    background-repeat: no-repeat;
-    background-size: cover;
+    
     position: absolute;
     right: 10px;
     top: 17px;
@@ -309,20 +303,19 @@ body {
   font-style: normal;
 }
 
-
 .rec-colect {
     display: flex;
     flex-wrap: wrap;
-
     overflow-x: auto;
-
     justify-content: flex-start;
 
     padding-left: 20px;
     padding-top: 10px;
 
-    width: 110%;
-    height: 55%;
+    width: 105%;
+    height: 60%;
+
+    gap: 25px; 
 }
 
 .recPanel{
