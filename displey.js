@@ -16,6 +16,7 @@ btnAdd.addEventListener("click", () => {
   interface.classList.toggle("active1");
   
 
+
   const abierto = menuLeft.classList.contains("active");
   cerrarTodos();
   if (!abierto) menuLeft.classList.add("active");
@@ -25,6 +26,8 @@ btnTrack.addEventListener("click", () => {
   interface.classList.remove("active1");
   interface.classList.remove("active3");
   interface.classList.toggle("active2");
+
+
 
   const abierto = menuRight.classList.contains("active");
   cerrarTodos();
@@ -37,7 +40,8 @@ btnColect.addEventListener("click", () => {
   interface.classList.remove("active1");
   interface.classList.remove("active2");
   interface.classList.toggle("active3");
-  
+
+
   const abierto = menuBottom.classList.contains("active");
   cerrarTodos();
   if (!abierto) menuBottom.classList.add("active");

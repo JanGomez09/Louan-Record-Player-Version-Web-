@@ -211,14 +211,38 @@ btnRec.addEventListener("click", () => {
     console.log(cover.id);
     
 
-    iA = 0;
-    iB = 0;
-    imagenGlobal = null;
+   
 
     console.log(cover.src);
 
     recIndex++;
+
+
+    clear();
+
+    Swal.fire("Éxito", recName + " from " + recArti + " has been added to your collection!", "success");
 }); 
+
+function clear() {
+    document.getElementById("name").value = "";
+    document.getElementById("artist").value = "";
+    document.getElementById("genera").value = "";
+    document.getElementById("year").value = "";
+    btnformat.value = "SP";
+    showcover.src = "txt_8.png";
+    document.getElementById("lsA").innerHTML = "";
+    document.getElementById("lsB").innerHTML = "";
+    upA.value = "";
+    upB.value = "";
+    btncover.value = "";
+    lA = [];
+    lB = [];
+    tsA = [];
+    tsB = [];
+    iA = 0;
+    iB = 0;
+    imagenGlobal = null;
+}
 
 let currentRecord = null;
 
@@ -238,8 +262,61 @@ document.addEventListener("click", function (e) {
     if (found) {
       currentRecord = found;
       console.log("Registro actual:", currentRecord);
+      pl();
     } else {
       console.log("No se encontró el registro");
     }
   }
 });
+
+let side = "A";
+
+const curName = document.getElementById("curName");
+const curArtist = document.getElementById("curArtist");
+const curSide = document.getElementById("curSide");
+const curCover = document.getElementById("curCove");
+
+const arm = document.getElementById("arm");
+const curDisc = document.getElementById("vinyl");
+const curPanel = document.getElementById("curPanel");
+
+const curA = document.getElementById("curA");
+const curB = document.getElementById("curB");
+
+function pl() {
+    curName.textContent = currentRecord.name;
+    curArtist.textContent = currentRecord.artist;
+    curSide.textContent = "Side: " + side;
+    curCover.src = currentRecord.cover;
+
+    // Limpiar listas anteriores
+    curA.innerHTML = "";
+    curB.innerHTML = "";
+
+    // Agregar tracks de Side A
+    currentRecord.tracksA.forEach(track => {
+        const liA = document.createElement('li');
+        liA.textContent = track;
+        curA.appendChild(liA);
+    });
+
+    // Agregar tracks de Side B
+    currentRecord.tracksB.forEach(track => {
+        const liB = document.createElement('li');
+        liB.textContent = track;
+        curB.appendChild(liB);
+    });
+
+    curDisc.className = "vinyl2";
+    arm.className = "armPlay";
+    curPanel.className = "rec-form";
+
+    if (currentRecord.format === "LP") {
+        curDisc.src = "txt_10.png";
+    } else if (currentRecord.format === "EP") {
+        curDisc.src = "txt_12.png";
+    } else if (currentRecord.format === "SP") {
+        curDisc.src = "txt_13.png";
+    }
+
+}

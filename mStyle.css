@@ -19,7 +19,7 @@ body {
 
 .app {
 
-    width: 75%;
+    width: 60%;
     height: 750px;
     background: #353535;
     position: relative;
@@ -33,15 +33,15 @@ body {
 
 /* Zona del tocadiscos */
 .player {
-    width: calc(412px * 1.5);
-    height: calc(274px * 1.5);
+    width: calc(412px * 1.6);
+    height: calc(274px * 1.8);
     background-image: url("text_1.png");
     background-repeat: no-repeat;
     background-size: cover;
 
     top: 50px;
     left: 100px;
-    position: relative;
+    position: absolute;
     box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
    
 }
@@ -58,30 +58,69 @@ body {
 
 
 
-.vinyl {
-    width: calc(244px * 1.5);
-    height: calc(244px * 1.5);
+.vinyl1 {
+    width: calc(192px * 2.4);
+    height: calc(192px * 2.4);
 
     position: absolute;
-    top: 20px;
-    left: 17px;
+    top: 10px;
+    left: 10px;
+    
 
     visibility: hidden;
 }
 
+.vinyl2{
+    width: calc(192px * 2.4);
+    height: calc(192px * 2.4);
+
+    position: absolute;
+    top: 10px;
+    left: 10px;
+
+    visibility: visible;
+
+    animation: rotar 2s linear infinite;
+  
+  /* Opcional: asegurar que el elemento sea un bloque para rotar correctamente */
+    display: inline-block; 
+}
+
+@keyframes rotar {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 .arm {
     
-    width: calc(123px * 1.5);
-    height: calc(252px * 1.5);
+    width: calc(123px * 1.8);
+    height: calc(252px * 1.8);
     
     position: absolute;
     right: 10px;
     top: 17px;
+    transition: transform 0.3s ease;
+    transform: rotate(0deg);
 }
+
+.armPlay{
+    width: calc(123px * 1.8);
+    height: calc(252px * 1.8);
+    
+    position: absolute;
+    right: 120px;
+    top: -15px;
+    transform: rotate(40deg);
+}
+
 .armholder {
     background-image: url("txt_30.png");
-    width: calc(79px * 1.5);
-    height: calc(163px * 1.5);
+    width: calc(79px * 1.8);
+    height: calc(163px * 1.8);
     background-repeat: no-repeat;
     background-size: cover;
     position: absolute; 
@@ -92,16 +131,16 @@ body {
 /* Controles */
 .controls {
     position: absolute;
-    top: 475px;
-    left: 100px;
+    top: 560px;
+    left: 200px;
     display: flex;
     gap: 15px;
     align-items: center;
 }
 
 .btn {
-    width: 48px;
-    height: 48px;
+    width: 52px;
+    height: 52px;
     position: relative;
 }
 .btn:hover{
@@ -135,7 +174,7 @@ body {
     position: absolute;
     bottom: 30px;
     right: 40px;
-    display: flex;
+    display: grid;
     gap: 20px;
 }
 
@@ -178,12 +217,18 @@ body {
 .left {
   top: 0;
   left: 0;
-  width: 475px;
+  width: 500px;
   height: 100%;
- 
+
   transform: translateX(-100%);
 
   
+}
+
+.dis{
+    top: -430px;
+    left: 400px;
+    position: relative;
 }
 
 .rec-form {
@@ -198,8 +243,23 @@ body {
     
     width: 85%;
     height: 85%;
+    visibility: visible;
+}
 
+.rec-form1 {
+    overflow-y: auto;
+  
+    
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    padding: 24px;
  
+  
+    
+    width: 85%;
+    height: 85%;
+
+    visibility: hidden;
 }
 .menu li{
     font-size: 1.5em;
@@ -270,9 +330,10 @@ body {
 /* DERECHA */
 .right {
   top: 0;
-  right: 0;
- 
-  width: 445px;
+  right: 0; 
+
+    
+  width: 500px;
   height: 100%;
   transform: translateX(100%);
 }
@@ -336,6 +397,7 @@ body {
     height: 192px;
     right: 192px;
     top: 0px
+    
   
 }
 
