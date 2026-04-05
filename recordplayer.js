@@ -326,6 +326,7 @@ function pl() {
     
     noo.style.visibility = "hidden";
     curPanel.className = "rec-form";
+    curPanel.style.visibility = "visible"
 
     if (currentRecord.format === "LP") {
         curDisc.src = "txt_10.png";
