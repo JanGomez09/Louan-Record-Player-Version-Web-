@@ -180,13 +180,14 @@
     </div>
 
     <div id="menuRight" class="menu right" >
-        <div id="curPanel" class="rec-form1" style="align-items: flex-start;">
-            <h2 class="caveat-brush-regular">Currently Playing</h2>
-            
+        <div id="curPanel" class="rec-form1" style=" align-items: flex-start;">
+            <h2 style="visibility: visible;" class=" text-align: center; caveat-brush-regular">Currently Playing:</h2>
+            <br>
             <div style="gap:20px; display:flex;  align-items:center;">
                 <img width="220" id="curCove" src="txt_8.png" ></img>
                 <div>
                     <label style="font-size: 2.5em;" id="curName" class="caveat-brush-regular">Record Name </label>
+                    <br>
                     <br>
                     <label style="font-size: 2em;" id="curArtist" class="caveat-brush-regular">Record Artist </label>
                     <br>
@@ -194,9 +195,7 @@
                 </div>
                 
             </div>  
-
-            
-
+            <label class="caveat-brush-regular" id="noo" style=" text-align: center; visibility: visible;" >Theres nothing playing, <br> you need to select a record first</label>
             <div style="gap:20px; display:flex; flex-direction: column;  align-items:left;">
                 <div>
                     <label style="font-size: 3em;" id="curName" class="caveat-brush-regular">Tracklist </label>
@@ -219,7 +218,8 @@
                         </ul>
                     </div>
                 </div>
-                
+
+                <button id="delete" class="caveat-brush-regular" >Delete Record</button>
             </div> 
         </div>
          

@@ -19,7 +19,7 @@ body {
 
 .app {
 
-    width: 60%;
+    width: 55%;
     height: 750px;
     background: #353535;
     position: relative;
@@ -63,7 +63,7 @@ body {
     height: calc(192px * 2.4);
 
     position: absolute;
-    top: 10px;
+    top: 18px;
     left: 10px;
     
 
@@ -75,12 +75,45 @@ body {
     height: calc(192px * 2.4);
 
     position: absolute;
-    top: 10px;
+    top: 16px;
     left: 10px;
 
     visibility: visible;
 
     animation: rotar 2s linear infinite;
+  
+  /* Opcional: asegurar que el elemento sea un bloque para rotar correctamente */
+    display: inline-block; 
+}
+
+.vinyl3{
+    width: calc(192px * 2.2);
+    height: calc(192px * 2.2);
+
+    position: absolute;
+    top: 34px;
+    left: 32px;
+
+    visibility: visible;
+
+    animation: rotar 2s linear infinite;
+  
+  /* Opcional: asegurar que el elemento sea un bloque para rotar correctamente */
+    display: inline-block; 
+}
+
+
+.vinyl4{
+    width: calc(192px * 2);
+    height: calc(192px * 2);
+
+    position: absolute;
+    top: 54px;
+    left: 48px;
+
+    visibility: visible;
+
+    animation: rotar 1s linear infinite;
   
   /* Opcional: asegurar que el elemento sea un bloque para rotar correctamente */
     display: inline-block; 
@@ -95,15 +128,17 @@ body {
   }
 }
 
+
+
 .arm {
     
     width: calc(123px * 1.8);
     height: calc(252px * 1.8);
     
     position: absolute;
-    right: 10px;
-    top: 17px;
-    transition: transform 0.3s ease;
+    right: 7px;
+    top: 24px;
+
     transform: rotate(0deg);
 }
 
@@ -115,6 +150,15 @@ body {
     right: 120px;
     top: -15px;
     transform: rotate(40deg);
+}
+.armPlay2{
+    width: calc(123px * 1.8);
+    height: calc(252px * 1.8);
+    
+    position: absolute;
+    right: 120px;
+    top: -30px;
+    transform: rotate(45deg);
 }
 
 .armholder {
@@ -217,7 +261,7 @@ body {
 .left {
   top: 0;
   left: 0;
-  width: 500px;
+  width: 600px;
   height: 100%;
 
   transform: translateX(-100%);
@@ -333,7 +377,7 @@ body {
   right: 0; 
 
     
-  width: 500px;
+  width: 600px;
   height: 100%;
   transform: translateX(100%);
 }

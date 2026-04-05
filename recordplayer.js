@@ -145,6 +145,10 @@ let recIndex = 0;
 
 
 btnRec.addEventListener("click", () => {
+
+    
+
+
     const recName = document.getElementById("name").value;
     const recArti = document.getElementById("artist").value;
     const recGenr = document.getElementById("genera").value;
@@ -155,6 +159,11 @@ btnRec.addEventListener("click", () => {
     const trackB = tsB;
     const recform = btnformat.value;
     const recCover =  imagenGlobal;
+
+    if (!recName || !recArti || !recGenr || !recYear || !recform || !recCover || trackA.length === 0 || trackB.length === 0 || recAside.length === 0 || recBside.length === 0) {
+        Swal.fire("Error", "Please fill in all fields and select at least one track for each side.", "error");
+        return;
+    }
 
     const record = {
         id: recIndex,
@@ -218,6 +227,9 @@ btnRec.addEventListener("click", () => {
     recIndex++;
 
 
+
+    
+
     clear();
 
     Swal.fire("Éxito", recName + " from " + recArti + " has been added to your collection!", "success");
@@ -242,6 +254,9 @@ function clear() {
     iA = 0;
     iB = 0;
     imagenGlobal = null;
+
+    inpSA.value = "";
+    inpSB.value = "";
 }
 
 let currentRecord = null;
@@ -279,6 +294,7 @@ const curCover = document.getElementById("curCove");
 const arm = document.getElementById("arm");
 const curDisc = document.getElementById("vinyl");
 const curPanel = document.getElementById("curPanel");
+const noo = document.getElementById("noo");
 
 const curA = document.getElementById("curA");
 const curB = document.getElementById("curB");
@@ -286,7 +302,7 @@ const curB = document.getElementById("curB");
 function pl() {
     curName.textContent = currentRecord.name;
     curArtist.textContent = currentRecord.artist;
-    curSide.textContent = "Side: " + side;
+    curSide.textContent = currentRecord.format + " Side: A";
     curCover.src = currentRecord.cover;
 
     // Limpiar listas anteriores
@@ -307,16 +323,164 @@ function pl() {
         curB.appendChild(liB);
     });
 
-    curDisc.className = "vinyl2";
-    arm.className = "armPlay";
+    
+    noo.style.visibility = "hidden";
     curPanel.className = "rec-form";
 
     if (currentRecord.format === "LP") {
         curDisc.src = "txt_10.png";
+        curDisc.className = "vinyl2";
+        arm.className = "armPlay";
     } else if (currentRecord.format === "EP") {
         curDisc.src = "txt_12.png";
+        curDisc.className = "vinyl3";
+        arm.className = "armPlay";
     } else if (currentRecord.format === "SP") {
         curDisc.src = "txt_13.png";
+        curDisc.className = "vinyl4";
+        arm.className = "armPlay2";
     }
+    AudioStart();
+    playBtn.src = "txt_14.png";
 
 }
+
+// Función para iniciar la reproducción de audio
+
+const flipBtn = document.getElementById("turns");
+
+const rewiBtn = document.getElementById("rewin");
+const backBtn = document.getElementById("backw");
+
+const playBtn = document.getElementById("pause");
+
+const fordBtn = document.getElementById("fordw");
+const advaBtn = document.getElementById("advan");
+
+const stopBtn = document.getElementById("break");
+
+
+let audio = null;
+let currentTrack = 0;
+
+function AudioStart() {
+    if (!currentRecord) return;
+
+    const audioList = side === "A" ? currentRecord.sideA : currentRecord.sideB;
+    if (!audioList || audioList.length === 0) {
+        console.warn("No audio files available for side", side);
+        return;
+    }
+
+    if (audio) {
+        audio.pause();
+        audio.src = "";
+    }
+
+    currentTrack = 0;
+    audio = new Audio();
+    audio.src = URL.createObjectURL(audioList[currentTrack]);
+    audio.play();
+
+    if (audioList.length > 1) {
+        audio.addEventListener('ended', () => {
+            currentTrack++;
+            if (currentTrack < audioList.length) {
+                audio.src = URL.createObjectURL(audioList[currentTrack]);
+                audio.play();
+                
+            }
+        });
+    }
+}
+
+flipBtn.addEventListener("click", () => {
+    if (side === "A") {
+        side = "B";
+        curSide.textContent = currentRecord.format + " Side: B";
+    } else {
+        side = "A";
+        curSide.textContent = currentRecord.format + " Side: A";
+    }
+    AudioStart();
+});
+
+rewiBtn.addEventListener("click", () => {
+    if (audio) audio.currentTime = Math.max(0, audio.currentTime - 50000);
+});
+
+backBtn.addEventListener("click", () => {
+    if (audio) audio.currentTime = Math.max(0, audio.currentTime - 10);
+});
+
+playBtn.addEventListener("click", () => {
+    if (!currentRecord) return;
+    if (audio) {
+        if (audio.paused) {
+            audio.play();
+            playBtn.src = "txt_14.png"; // Cambia a icono de pausa
+            if (currentRecord.format === "LP") {
+                arm.className = "armPlay";
+            } else if (currentRecord.format === "EP") {
+                arm.className = "armPlay";
+            } else if (currentRecord.format === "SP") {
+                arm.className = "armPlay2";
+            }
+        }
+        else {
+            audio.pause();
+            playBtn.src = "txt_15.png"; // Cambia a icono de reproducción
+            arm.className = "arm";
+        }
+    }
+});
+
+fordBtn.addEventListener("click", () => {
+    if (audio) audio.currentTime = Math.min(audio.duration, audio.currentTime + 10);
+});
+
+advaBtn.addEventListener("click", () => {
+    if (audio) audio.currentTime = Math.min(audio.duration, audio.currentTime + 50000);
+});     
+
+stopBtn.addEventListener("click", () => {
+    if (audio) {
+        audio.pause();
+        audio.currentTime = 0;
+        playBtn.src = "txt_15.png";
+        arm.className = "arm";
+        curDisc.className = "vinyl1";
+        curPanel.style.visibility = "hidden";
+        currentRecord = null;
+        curName.textContent = "";
+        curArtist.textContent = "";
+        curSide.textContent = "";
+        curCover.src = "txt_8.png";
+        curA.innerHTML = "";
+        curB.innerHTML = "";
+        noo.style.visibility = "visible";
+        side = "A";
+        audio.src = "";
+    }
+});
+
+const deleteBtn = document.getElementById("delete");
+
+deleteBtn.addEventListener("click", () => {
+    if (!currentRecord) return;
+    
+    const confirmation = confirm("Do you really really want to delete " + currentRecord.name + " from your collection?");
+    if (!confirmation) return;      
+
+
+    const index = colection.findIndex(item => item.id === currentRecord.id);
+    if (index !== -1) {
+        colection.splice(index, 1);
+        const panelToRemove = document.getElementById(currentRecord.name);
+        if (panelToRemove) panelToRemove.remove();
+        Swal.fire("Deleted", "Alright, " + currentRecord.name + " has been removed from your collection.", "success");
+        stopBtn.click(); // Detener reproducción y limpiar panel
+    }
+});
+
+
