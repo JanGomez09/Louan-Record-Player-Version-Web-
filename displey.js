@@ -1,6 +1,7 @@
 const btnAdd = document.getElementById("add");
 const btnTrack = document.getElementById("trackL");
 const btnColect = document.getElementById("colect");
+const btnSeting = document.getElementById("seting");
 
 const interface = document.getElementById("app");
 
@@ -14,7 +15,7 @@ btnAdd.addEventListener("click", () => {
   interface.classList.remove("active3");
   interface.classList.remove("active2");
   interface.classList.toggle("active1");
-  
+  interface.classList.remove("up");
 
 
   const abierto = menuLeft.classList.contains("active");
@@ -26,7 +27,7 @@ btnTrack.addEventListener("click", () => {
   interface.classList.remove("active1");
   interface.classList.remove("active3");
   interface.classList.toggle("active2");
-
+  interface.classList.remove("up");
 
 
   const abierto = menuRight.classList.contains("active");
@@ -40,12 +41,22 @@ btnColect.addEventListener("click", () => {
   interface.classList.remove("active1");
   interface.classList.remove("active2");
   interface.classList.toggle("active3");
+  interface.classList.remove("up");
 
 
   const abierto = menuBottom.classList.contains("active");
   cerrarTodos();
   if (!abierto) menuBottom.classList.add("active");
 }); 
+
+btnSeting.addEventListener("click", () => {
+  interface.classList.remove("active1");
+  interface.classList.remove("active2");
+  interface.classList.remove("active3");
+  interface.classList.toggle("up");
+
+  cerrarTodos();
+});
 
 
 function cerrarTodos() {
