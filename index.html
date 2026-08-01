@@ -6,6 +6,7 @@
 <link rel="icon" href="icon.png" type="image/png">
 <link rel="stylesheet" href="mStyle.css">
 <link rel="preconnect" href="https://fonts.googleapis.com">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Caveat+Brush&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -22,29 +23,31 @@
 
         
         <div class="player">
-            <img id="vinyl" class="vinyl1" src="txt_10.png"></img>
+            <img id="vinyl" class="vinyl1" src="images/txt_10.png"></img>
             <div class="armholder"></div>
-            <img id="arm" class="arm" src="txt_2.png"></img>
+            <img id="arm" class="arm" src="images/txt_2.png"></img>
         </div>
 
       
         <div class="controls">
-            <img id="turns" src="txt_16.png" class="btn"></img>
-            <img id="rewin" src="txt_27.png" class="btn"></img>
-            <img id="backw" src="txt_18.png" class="btn"></img>
-            <img id="pause" src="txt_15.png"  class="btn"></img>
-            <img id="fordw" src="txt_17.png"  class="btn"></img>
-            <img id="advan"src="txt_26.png"  class="btn"></img>
-            <img id="break" src="txt_24.png" class="btn"></img>
+            <img id="turns" src="images/txt_16.png" class="btn"></img>
+            <img id="rewin" src="images/txt_27.png" class="btn"></img>
+            <img id="backw" src="images/txt_18.png" class="btn"></img>
+            <img id="pause" src="images/txt_15.png"  class="btn"></img>
+            <img id="fordw" src="images/txt_17.png"  class="btn"></img>
+            <img id="advan"src="images/txt_26.png"  class="btn"></img>
+            <img id="break" src="images/txt_24.png" class="btn"></img>
         </div>
 
     
         <div  class="guiBtn">
-        <img id="add" src="txt_6.png" class="add-btn"></img>
-
+        
+        <img id="add" src="images/txt_6.png" class="add-btn"></img>
+        <img id="seting" src="images/txt_31.png" class="set-btn"></img>
         <div class="icons">
-                <img id="trackL" src="txt_31.png" ></img>
-                <img id="colect" src="txt_4.png" ></img>
+             
+                <img id="trackL" src="images/txt_31.png" ></img>
+                <img id="colect" src="images/txt_4.png" ></img>
             </div>
         </div>
     </div>
@@ -68,8 +71,8 @@
             <!--Portada-->
             <br>
             <div>
-                <img id="coverShow" src="txt_8.png" ></img>
-                <img id="formatShow" src="txt_10.png" ></img>
+                <img id="coverShow" src="images/txt_8.png" ></img>
+                <img id="formatShow" src="images/txt_10.png" ></img>
             </div>
             <br>
             <!--Nombre-->
@@ -88,22 +91,7 @@
                 <input class="caveat-brush-regular" id="artist" type="text" name="artist">
             </div>
             <br>  
-            <!--Genero-->  
-            <br>
-            <div>
-                <label class="caveat-brush-regular">Record's Genera</label>
-                <br>
-                <input class="caveat-brush-regular" id="genera" type="text" name="genera">
-            </div>
-            <br>
-            <!--Año-->
-            <br>
-            <div>
-                <label class="caveat-brush-regular">Record's Raelease Year</label>
-                <br>
-                <input class="caveat-brush-regular" id="year" type="number" name="year">
-            </div>
-            <br>
+            
             <!--Formato-->
             <br>
             <div>
@@ -148,7 +136,12 @@
                     <input  id="inpSA" class="caveat-brush-regular" type="text" name="inpSA">
                     <br>
                     <br>
-                    <button id="btnSA" class="caveat-brush-regular" name="btnSA">Add Track</button>
+                    <div >
+                        <button id="btnSA" class="caveat-brush-regular" name="btnSA">Add Track</button>
+                        <br>
+                        <br>
+                        <button id="btnDelSA" class="caveat-brush-regular" name="btnDelSA">Delete Last Track</button>
+                    </div>
                 </div>
                 <br>
                 <br>
@@ -162,7 +155,12 @@
                     <input id="inpSB" class="caveat-brush-regular" type="text" name="inpSB" >
                     <br>
                     <br>
-                    <button id="btnSB" class="caveat-brush-regular" name="btnSB">Add Track</button>
+                    <div >
+                        <button id="btnSB" class="caveat-brush-regular" name="btnSB">Add Track</button>
+                        <br>
+                        <br>
+                        <button id="btnDelSB" class="caveat-brush-regular" name="btnDelSB">Delete Last Track</button>
+                    </div>
                 </div>
             </div>
             <br>
@@ -184,7 +182,7 @@
             <h2 style="visibility: visible;" class=" text-align: center; caveat-brush-regular">Currently Playing:</h2>
             <br>
             <div style="gap:20px; display:flex;  align-items:center;">
-                <img width="220" id="curCove" src="txt_8.png" ></img>
+                <img width="220" id="curCove" src="images/txt_8.png" ></img>
                 <div>
                     <label style="font-size: 2.5em;" id="curName" class="caveat-brush-regular">Record Name </label>
                     <br>

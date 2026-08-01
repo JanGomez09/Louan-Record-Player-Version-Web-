@@ -1,5 +1,40 @@
 // registro
 
+
+let db;
+
+const request = indexedDB.open("RecordCollectionDB", 1);
+
+request.onupgradeneeded = function (event) {
+
+    db = event.target.result;
+
+    if (!db.objectStoreNames.contains("audios")) {
+
+        db.createObjectStore("audios", {
+            keyPath: "id"
+        });
+
+    }
+
+};
+
+request.onsuccess = function (event) {
+
+    db = event.target.result;
+
+    loadCollection();
+
+};
+
+request.onerror = function () {
+
+    console.log("Error abriendo IndexedDB");
+
+};
+
+
+
 let colection = [];
 
 const btnRec = document.getElementById("add-record");
@@ -12,6 +47,10 @@ const upB = document.getElementById("sideB");
 
 const UtlA = document.getElementById("btnSA");
 const UtlB = document.getElementById("btnSB");
+
+const DelA = document.getElementById("btnDelSA");
+const DelB = document.getElementById("btnDelSB");
+
 
 
 
@@ -49,6 +88,16 @@ UtlA.addEventListener('click', (e) => {
     slA.appendChild(newSongA);
 });
 
+DelA.addEventListener('click', (e) => {
+    if (tsA.length > 0) {
+        tsA.pop();
+        iA--;
+        const slA = document.getElementById("lsA");
+        slA.removeChild(slA.lastChild);
+    }
+});
+
+
 
 UtlB.addEventListener('click', (e) => {
 
@@ -69,6 +118,15 @@ UtlB.addEventListener('click', (e) => {
 
     newSongB.textContent = song;
     slB.appendChild(newSongB);
+});
+
+DelB.addEventListener('click', (e) => {
+    if (tsB.length > 0) {
+        tsB.pop();
+        iB--;
+        const slB = document.getElementById("lsB");
+        slB.removeChild(slB.lastChild);
+    }
 });
 
 
@@ -92,13 +150,13 @@ upB.addEventListener('change', (e) => {
 btnformat.addEventListener('change', function(e) {
 switch (btnformat.value) {
     case "SP":
-    document.getElementById("formatShow").src = "txt_11.png";
+    document.getElementById("formatShow").src = "images/txt_11.png";
         break;
     case "EP":
-    document.getElementById("formatShow").src = "txt_12.png";
+    document.getElementById("formatShow").src = "images/txt_12.png";
         break;
     case "LP":
-        document.getElementById("formatShow").src = "txt_10.png";
+        document.getElementById("formatShow").src = "images/txt_10.png";
     break;
 }
 });
@@ -151,8 +209,7 @@ btnRec.addEventListener("click", () => {
 
     const recName = document.getElementById("name").value;
     const recArti = document.getElementById("artist").value;
-    const recGenr = document.getElementById("genera").value;
-    const recYear = document.getElementById("year").value;
+
     const recAside = lA;
     const recBside = lB;
     const trackA = tsA;
@@ -160,17 +217,15 @@ btnRec.addEventListener("click", () => {
     const recform = btnformat.value;
     const recCover =  imagenGlobal;
 
-    if (!recName || !recArti || !recGenr || !recYear || !recform || !recCover || trackA.length === 0 || trackB.length === 0 || recAside.length === 0 || recBside.length === 0) {
+    if (!recName || !recArti || !recform || !recCover || trackA.length === 0 || trackB.length === 0 || recAside.length === 0 || recBside.length === 0) {
         Swal.fire("Error", "Please fill in all fields and select at least one track for each side.", "error");
         return;
     }
 
     const record = {
-        id: recIndex,
+        id: Date.now().toString(),
         name: recName,
         artist: recArti,
-        genera: recGenr,
-        year: recYear,
         format: recform,
         cover: recCover,    
         sideA: recAside,
@@ -181,6 +236,9 @@ btnRec.addEventListener("click", () => {
     };
 
     colection.push(record);
+
+    saveCollection();
+    saveAudio(record);
 
 
 
@@ -199,8 +257,8 @@ btnRec.addEventListener("click", () => {
     liPanelD.appendChild(liPanel);  
 
     cover.src = recCover;
-    liPanel.id = recName;
-    cover.id = "disc" + recIndex;
+    liPanel.id = "panel-" + record.id;
+    cover.dataset.id = record.id;
     cover.className = "recPanel";
 
     if (recform == "LP") {
@@ -237,11 +295,9 @@ btnRec.addEventListener("click", () => {
 
 function clear() {
     document.getElementById("name").value = "";
-    document.getElementById("artist").value = "";
-    document.getElementById("genera").value = "";
-    document.getElementById("year").value = "";
+    document.getElementById("artist").value = ""; 
     btnformat.value = "SP";
-    showcover.src = "txt_8.png";
+    showcover.src = "images/txt_8.png";
     document.getElementById("lsA").innerHTML = "";
     document.getElementById("lsB").innerHTML = "";
     upA.value = "";
@@ -263,25 +319,32 @@ let currentRecord = null;
 
 
 document.addEventListener("click", function (e) {
-  const img = e.target.closest("img");
+    const img = e.target.closest(".recPanel");
 
-  // Verifica que el id sea tipo "disc0", "disc1", etc.
-  if (img && /^disc\d+$/.test(img.id)) {
+    if (!img) return;
 
-    // Extraer el número del id
-    const idNumero = parseInt(img.id.replace("disc", ""), 10);
+    
 
-    // Buscar en la colección usando el número
-    const found = colection.find(item => item.id === idNumero);
+    const id = img.dataset.id;
 
-    if (found) {
-      currentRecord = found;
-      console.log("Registro actual:", currentRecord);
-      pl();
-    } else {
-      console.log("No se encontró el registro");
-    }
-  }
+    const found = colection.find(item => item.id === id);
+
+    
+
+    if (!found) return;
+
+    console.log("Record clicked:");
+
+    loadAudio(found.id).then(audioData => {
+
+    found.sideA = audioData.sideA;
+    found.sideB = audioData.sideB;
+
+    currentRecord = found;
+
+    pl();
+
+    });
 });
 
 let side = "A";
@@ -300,6 +363,8 @@ const curA = document.getElementById("curA");
 const curB = document.getElementById("curB");
 
 function pl() {
+
+    
     curName.textContent = currentRecord.name;
     curArtist.textContent = currentRecord.artist;
     curSide.textContent = currentRecord.format + " Side: A";
@@ -326,23 +391,23 @@ function pl() {
     
     noo.style.visibility = "hidden";
     curPanel.className = "rec-form";
-    curPanel.style.visibility = "visible"
+    curPanel.style.visibility = "visible";
 
     if (currentRecord.format === "LP") {
-        curDisc.src = "txt_10.png";
+        curDisc.src = "images/txt_10.png";
         curDisc.className = "vinyl2";
         arm.className = "armPlay";
     } else if (currentRecord.format === "EP") {
-        curDisc.src = "txt_12.png";
+        curDisc.src = "images/txt_12.png";
         curDisc.className = "vinyl3";
         arm.className = "armPlay";
     } else if (currentRecord.format === "SP") {
-        curDisc.src = "txt_13.png";
+        curDisc.src = "images/txt_13.png";
         curDisc.className = "vinyl4";
         arm.className = "armPlay2";
     }
     AudioStart();
-    playBtn.src = "txt_14.png";
+    playBtn.src = "images/txt_14.png";
 
 }
 
@@ -430,7 +495,7 @@ playBtn.addEventListener("click", () => {
         }
         else {
             audio.pause();
-            playBtn.src = "txt_15.png"; // Cambia a icono de reproducción
+            playBtn.src = "images/txt_15.png"; // Cambia a icono de reproducción
             arm.className = "arm";
         }
     }
@@ -448,7 +513,7 @@ stopBtn.addEventListener("click", () => {
     if (audio) {
         audio.pause();
         audio.currentTime = 0;
-        playBtn.src = "txt_15.png";
+        playBtn.src = "images/txt_15.png";
         arm.className = "arm";
         curDisc.className = "vinyl1";
         curPanel.style.visibility = "hidden";
@@ -456,7 +521,7 @@ stopBtn.addEventListener("click", () => {
         curName.textContent = "";
         curArtist.textContent = "";
         curSide.textContent = "";
-        curCover.src = "txt_8.png";
+        curCover.src = "images/txt_8.png";
         curA.innerHTML = "";
         curB.innerHTML = "";
         noo.style.visibility = "visible";
@@ -477,7 +542,15 @@ deleteBtn.addEventListener("click", () => {
     const index = colection.findIndex(item => item.id === currentRecord.id);
     if (index !== -1) {
         colection.splice(index, 1);
-        const panelToRemove = document.getElementById(currentRecord.name);
+
+        const transaction = db.transaction(["audios"],"readwrite");
+
+        transaction.objectStore("audios").delete(currentRecord.id);
+
+        saveCollection();
+
+
+        const panelToRemove = document.getElementById("panel-" + currentRecord.id);
         if (panelToRemove) panelToRemove.remove();
         Swal.fire("Deleted", "Alright, " + currentRecord.name + " has been removed from your collection.", "success");
         stopBtn.click(); // Detener reproducción y limpiar panel
@@ -485,3 +558,125 @@ deleteBtn.addEventListener("click", () => {
 });
 
 
+function saveAudio(record){
+
+    if(!db){
+        console.error("Database not ready");
+        return;
+    }
+
+    const transaction = db.transaction(["audios"],"readwrite");
+
+    const store = transaction.objectStore("audios");
+
+    store.put({
+
+        id: record.id,
+        sideA: record.sideA,
+        sideB: record.sideB
+
+    });
+
+}
+
+
+function saveCollection(){
+
+    const data = colection.map(r=>({
+
+        id:r.id,
+        name:r.name,
+        artist:r.artist,
+        format:r.format,
+        cover:r.cover,
+        tracksA:r.tracksA,
+        tracksB:r.tracksB
+
+    }));
+
+    localStorage.setItem("collection",JSON.stringify(data));
+
+}
+
+function loadAudio(id){
+
+    return new Promise((resolve,reject)=>{
+
+        const transaction = db.transaction(["audios"],"readonly");
+
+        const store = transaction.objectStore("audios");
+
+        const request = store.get(id);
+
+        request.onsuccess = ()=>{
+
+            resolve(request.result);
+
+        };
+
+        request.onerror = ()=>{
+
+            reject();
+
+        };
+
+    });
+
+}
+
+
+function loadCollection(){
+
+    const saved = localStorage.getItem("collection");
+
+    if(!saved) return;
+
+    try{
+
+        colection = JSON.parse(saved);
+
+    }catch{
+
+        colection=[];
+
+    }
+
+    recIndex = colection.length;
+
+    colection.forEach(record=>{
+
+        const cover=document.createElement("img");
+        const disc=document.createElement("img");
+
+        const liPanelS=document.getElementById("menuBottom");
+        const liPanelD=liPanelS.querySelector(".rec-colect");
+
+        const liPanel=document.createElement("div");
+
+        liPanel.id = "panel-" + record.id;
+
+        cover.src=record.cover;
+
+        cover.dataset.id = record.id;
+
+        cover.className="recPanel";
+
+        if(record.format==="LP")
+            disc.src="images/txt_10.png";
+
+        if(record.format==="EP")
+            disc.src="images/txt_12.png";
+
+        if(record.format==="SP")
+            disc.src="images/txt_11.png";
+
+        disc.className="discPanel";
+
+        liPanel.appendChild(cover);
+        liPanel.appendChild(disc);
+
+        liPanelD.appendChild(liPanel);
+
+    });
+
+}

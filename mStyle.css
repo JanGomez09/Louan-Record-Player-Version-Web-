@@ -35,7 +35,7 @@ body {
 .player {
     width: calc(412px * 1.6);
     height: calc(274px * 1.8);
-    background-image: url("text_1.png");
+    background-image: url("images/text_1.png");
     background-repeat: no-repeat;
     background-size: cover;
 
@@ -162,7 +162,7 @@ body {
 }
 
 .armholder {
-    background-image: url("txt_30.png");
+    background-image: url("images/txt_30.png");
     width: calc(79px * 1.8);
     height: calc(163px * 1.8);
     background-repeat: no-repeat;
@@ -205,6 +205,23 @@ body {
    
  
 }
+
+.set-btn {
+    position: absolute;
+    bottom: 30px;
+    left: 120px;
+    width: 70px;
+    height: 70px;
+ 
+}
+   
+ .set-btn:hover{
+    opacity: 0.4;
+}
+.set-btn:active{
+    opacity: 1;
+}
+
 
 .add-btn:hover{
     opacity: 0.4;
@@ -285,7 +302,7 @@ body {
  
   
     
-    width: 85%;
+    width: 70%;
     height: 85%;
     visibility: visible;
 }
@@ -386,13 +403,24 @@ body {
   transform: translateX(0);
 }
 
+
+
+.up {
+
+    transform: translateY(18.5%);
+}
+
+.up.active {
+  transform: translateY(0);
+}
+
 /* ABAJO */
 .bottom {
      
     bottom: 0;
     left: 0;
     width: 100%;
-    height: 330px;
+    height: 326px;
     transform: translateY(100%);
 
     
@@ -454,3 +482,5 @@ body {
 .recPanel:hover + .discPanel {
   transform: translateX(125px);
 }
+
+
