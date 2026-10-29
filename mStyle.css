@@ -6,7 +6,7 @@ body {
     padding: 0 auto;
     background: #1b1b1b;
     font-family: initial;
-    display: block;
+    display: flex;
     justify-items: center;
     justify-content: center;
     align-items: center;
