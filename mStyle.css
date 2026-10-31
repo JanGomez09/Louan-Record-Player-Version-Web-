@@ -484,3 +484,510 @@ body {
 }
 
 
+
+
+/* =====================================================================
+   ADAPTACIÓN PARA TELÉFONOS (responsive)
+   ---------------------------------------------------------------------
+   Todo lo de arriba es el diseño original de escritorio y no se toca.
+   Estas reglas solo se activan en pantallas pequeñas (teléfonos en
+   vertical y en horizontal). Mismas imágenes, mismos botones, mismo
+   comportamiento: solo cambia cómo se acomodan en la pantalla.
+   ===================================================================== */
+
+/* Ventanas / tabletas medianas: el diseño original necesita unos 780px
+   de ancho para no cortarse, así que se le da ese mínimo. */
+@media (min-width: 901px) {
+    .app {
+        min-width: 780px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+}
+
+@media (max-width: 900px), (max-height: 520px) and (orientation: landscape) {
+
+    :root {
+        --bar-h: 72px; /* alto de la barra de botones inferior */
+        /* Zonas seguras (notch, barra de gestos). Capacitor inyecta las
+           variables --safe-area-inset-*; env() es el respaldo. */
+        --sat: var(--safe-area-inset-top, env(safe-area-inset-top, 0px));
+        --sab: var(--safe-area-inset-bottom, env(safe-area-inset-bottom, 0px));
+        --sal: var(--safe-area-inset-left, env(safe-area-inset-left, 0px));
+        --sar: var(--safe-area-inset-right, env(safe-area-inset-right, 0px));
+    }
+
+    html {
+        -webkit-text-size-adjust: 100%;
+    }
+
+    body {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: stretch;
+        box-sizing: border-box;
+        width: 100%;
+        height: auto;
+        min-height: 100vh;
+        padding:
+            calc(var(--sat) + 10px)
+            calc(var(--sar) + 8px)
+            calc(var(--bar-h) + var(--sab) + 10px)
+            calc(var(--sal) + 8px);
+        overflow-x: hidden;
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    /* Los dos <br> del inicio solo servían para separar en escritorio */
+    body > br {
+        display: none;
+    }
+
+    /* ---------- Tarjeta principal ---------- */
+    .app,
+    .app.active1,
+    .app.active2,
+    .app.active3,
+    .app.up {
+        /* En teléfono los menús se abren a pantalla completa, así que ya
+           no hace falta desplazar la tarjeta (y un transform rompería la
+           barra fija de abajo). */
+        transform: none;
+        transition: none;
+    }
+
+    .app {
+        display: block;
+        box-sizing: border-box;
+        width: 100%;
+        max-width: 560px;
+        min-width: 0;
+        height: auto;
+        margin: 0 auto;
+        padding: 22px 12px 16px;
+        border-radius: 28px;
+    }
+
+    /* ---------- Tocadiscos ----------
+       El reproductor pasa a ocupar todo el ancho de la tarjeta y
+       mantiene su proporción original (659 x 493). Vinilo, brazo y
+       soporte se colocan en porcentajes, así que todo escala junto y
+       las clases que cambia recordplayer.js siguen funcionando igual. */
+    .player {
+        position: relative;
+        top: auto;
+        left: auto;
+        width: 100%;
+        height: 0;
+        padding-bottom: 74.82%; /* 493.2 / 659.2: mantiene la proporción */
+    }
+
+    .vinyl1,
+    .vinyl2 {
+        width: 69.903%;
+        height: auto;
+        left: 1.517%;
+    }
+    .vinyl1 { top: 3.65%; }
+    .vinyl2 { top: 3.244%; }
+
+    .vinyl3 {
+        width: 64.078%;
+        height: auto;
+        top: 6.894%;
+        left: 4.854%;
+    }
+
+    .vinyl4 {
+        width: 58.252%;
+        height: auto;
+        top: 10.949%;
+        left: 7.282%;
+    }
+
+    .arm {
+        width: 33.586%;
+        height: auto;
+        right: 1.062%;
+        top: 4.866%;
+    }
+
+    .armPlay {
+        width: 33.586%;
+        height: auto;
+        right: 18.204%;
+        top: -3.041%;
+    }
+
+    .armPlay2 {
+        width: 33.586%;
+        height: auto;
+        right: 18.204%;
+        top: -6.083%;
+    }
+
+    .armholder {
+        width: 21.572%;
+        height: 0;
+        padding-bottom: 44.51%; /* 21.572% * 163 / 79, relativo al ancho del reproductor */
+        right: 4.248%;
+        top: 1.622%;
+    }
+
+    /* ---------- Controles de reproducción ---------- */
+    .controls {
+        position: static;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 0;
+        width: 100%;
+        margin: 16px 0 0;
+        box-sizing: border-box;
+    }
+
+    .btn {
+        flex: 1 1 0;
+        min-width: 0;
+        max-width: 56px;
+        width: auto;
+        height: auto;
+    }
+
+    /* ---------- Barra de botones fija abajo ----------
+       Se queda siempre visible para poder abrir y cerrar los menús
+       (los mismos botones: agregar, ajustes, lista y colección). */
+    .guiBtn {
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 1100;
+        box-sizing: border-box;
+        display: flex;
+        align-items: center;
+        height: calc(var(--bar-h) + var(--sab));
+        padding: 0 calc(var(--sar) + 18px) var(--sab) calc(var(--sal) + 18px);
+        background: #353535;
+        border-radius: 24px 24px 0 0;
+        box-shadow: 0 -6px 18px rgba(0, 0, 0, 0.45);
+    }
+
+    .add-btn,
+    .set-btn {
+        position: static;
+        width: 52px;
+        height: 52px;
+    }
+
+    .add-btn { margin-right: auto; }
+    .set-btn { margin-right: 14px; }
+
+    .icons {
+        position: static;
+        display: flex;
+        gap: 14px;
+    }
+
+    .icons img {
+        width: 52px;
+        height: 52px;
+    }
+
+    .btn,
+    .add-btn,
+    .set-btn,
+    .icons img,
+    .recPanel,
+    .menu button {
+        touch-action: manipulation;
+        -webkit-user-select: none;
+        user-select: none;
+        -webkit-touch-callout: none;
+        -webkit-user-drag: none;
+    }
+
+    /* En pantallas táctiles el "hover" se queda pegado después de tocar.
+       Se cambia por un atenuado solo mientras el dedo presiona. */
+    @media (hover: none) {
+        .btn:hover,
+        .add-btn:hover,
+        .set-btn:hover,
+        .icons img:hover,
+        .menu input:hover,
+        .menu select:hover,
+        .menu button:hover {
+            opacity: 1;
+        }
+
+        .btn:active,
+        .add-btn:active,
+        .set-btn:active,
+        .icons img:active,
+        .menu button:active {
+            opacity: 0.4;
+        }
+    }
+
+    /* ---------- Menús (agregar disco / reproduciendo / colección) ---------- */
+    .menu {
+        box-sizing: border-box;
+        background: #1b1b1b;
+        padding-left: var(--sal);
+        padding-right: var(--sar);
+    }
+
+    .menu.left,
+    .menu.right {
+        top: 0;
+        bottom: calc(var(--bar-h) + var(--sab));
+        width: 100%;
+        height: auto;
+        padding-top: calc(var(--sat) + 8px);
+        display: flex;
+        flex-direction: column;
+    }
+
+    .menu h2 {
+        height: auto;
+        margin: 6px 0 4px;
+        padding-left: 16px;
+        padding-right: 16px;
+        font-size: 2.1em;
+        line-height: 1.1;
+    }
+
+    .menu label {
+        display: block;
+        margin-bottom: 6px;
+        font-size: 1.35em;
+        line-height: 1.15;
+    }
+
+    .menu li {
+        font-size: 1.15em;
+    }
+
+    .menu ul {
+        margin: 4px 0 8px;
+        padding-left: 22px;
+    }
+
+    .rec-form,
+    .rec-form1 {
+        box-sizing: border-box;
+        grid-template-columns: minmax(0, 1fr);
+        gap: 14px;
+        flex: 1 1 auto;
+        min-height: 0;
+        width: 100%;
+        height: auto;
+        padding: 8px 16px 16px;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        overscroll-behavior: contain;
+    }
+
+    /* El espaciado lo da el "gap"; los <br> de escritorio sobran */
+    .rec-form > br,
+    .rec-form1 > br,
+    .rec-form div > br,
+    .rec-form1 div > br {
+        display: none;
+    }
+
+    .menu input,
+    .menu select,
+    .menu button,
+    .menu button:hover {
+        display: block;
+        box-sizing: border-box;
+        width: 100%;
+        height: 46px;
+        margin: 0 0 10px;
+        padding: 0 12px;
+        font-size: 1.3em;
+    }
+
+    .menu input[type="file"] {
+        height: auto;
+        min-height: 46px;
+        padding: 6px 0;
+        font-size: 1.05em;
+    }
+
+    #coverShow,
+    #formatShow {
+        width: 46%;
+        max-width: 192px;
+        height: auto;
+    }
+
+    /* Botón "Add Record" (tiene medidas fijas escritas en el HTML) */
+    #add-record,
+    #add-record:hover {
+        flex: 0 0 auto;
+        width: auto !important;
+        height: 50px !important;
+        margin: 10px 16px 14px !important;
+        font-size: 1.5em !important;
+    }
+
+    /* Panel "Currently Playing" (tamaños escritos en el HTML) */
+    #curPanel > div:first-of-type {
+        flex-wrap: wrap;
+    }
+
+    #curCove {
+        width: 42%;
+        max-width: 180px;
+        height: auto;
+    }
+
+    #curPanel > div:first-of-type > div {
+        flex: 1 1 140px;
+        min-width: 0;
+    }
+
+    #curName[style*="2.5em"],
+    #curArtist,
+    #curSide {
+        display: block;
+    }
+
+    #curName[style*="2.5em"] { font-size: 1.9em !important; }
+    #curArtist               { font-size: 1.5em !important; }
+    #curSide                 { font-size: 1.2em !important; }
+    #curName[style*="3em"]   { font-size: 2.1em !important; }
+
+    /* Colección: estante que se desliza de lado */
+    .menu.bottom {
+        left: 0;
+        right: 0;
+        bottom: calc(var(--bar-h) + var(--sab));
+        width: 100%;
+        height: auto;
+        max-height: 50vh;
+        display: flex;
+        flex-direction: column;
+        border-radius: 24px 24px 0 0;
+    }
+
+    .menu.bottom.active {
+        box-shadow: 0 -6px 18px rgba(0, 0, 0, 0.5);
+    }
+
+    .rec-colect {
+        flex: 1 1 auto;
+        min-height: 0;
+        box-sizing: border-box;
+        flex-wrap: nowrap;
+        gap: 10px;
+        width: 100%;
+        height: auto;
+        padding: 10px 16px 16px;
+        overflow-x: auto;
+        overflow-y: hidden;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    /* Cada portada + su disco (que asoma al tocar, como el hover original) */
+    .rec-colect > div {
+        flex: 0 0 auto;
+        width: 190px;
+        height: 140px;
+        white-space: nowrap;
+        font-size: 0;
+        line-height: 0;
+    }
+
+    .recPanel {
+        width: 140px;
+        height: 140px;
+    }
+
+    .discPanel {
+        width: 140px;
+        height: 140px;
+        right: 140px;
+    }
+
+    .recPanel:hover + .discPanel {
+        transform: translateX(50px);
+    }
+}
+
+/* ---------- Teléfono en horizontal: tocadiscos a la izquierda,
+   controles a la derecha ---------- */
+@media (orientation: landscape) and (max-height: 520px) {
+
+    :root {
+        --bar-h: 60px;
+    }
+
+    .app {
+        max-width: 900px;
+        padding: 12px;
+        display: grid;
+        grid-template-columns: calc((100vh - 110px) * 1.3365) minmax(0, 1fr);
+        column-gap: 14px;
+        align-items: center;
+    }
+
+    .controls {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(44px, 1fr));
+        justify-items: center;
+        row-gap: 6px;
+        margin: 0;
+    }
+
+    .btn {
+        width: 100%;
+        max-width: 56px;
+    }
+
+    .add-btn,
+    .set-btn,
+    .icons img {
+        width: 44px;
+        height: 44px;
+    }
+
+    .menu.bottom {
+        max-height: 62vh;
+    }
+}
+
+/* ---------- Teléfono en vertical: controles en dos filas, más grandes ----------
+   Fila 1: retroceso rápido, atrás, play/pausa, adelante, avance rápido.
+   Fila 2: cambiar lado (A/B) y detener. */
+@media (max-width: 900px) and (orientation: portrait) {
+
+    .app {
+        padding: 22px 14px 22px;
+    }
+
+    .controls {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        justify-items: center;
+        align-items: center;
+        row-gap: 16px;
+        margin-top: 24px;
+    }
+
+    .btn {
+        width: 100%;
+        max-width: 64px;
+    }
+
+    #rewin  { grid-row: 1; grid-column: 1; }
+    #backw  { grid-row: 1; grid-column: 2; }
+    #pause  { grid-row: 1; grid-column: 3; max-width: 80px; }
+    #fordw  { grid-row: 1; grid-column: 4; }
+    #advan  { grid-row: 1; grid-column: 5; }
+    #turns  { grid-row: 2; grid-column: 2; }
+    #break  { grid-row: 2; grid-column: 4; }
+}
