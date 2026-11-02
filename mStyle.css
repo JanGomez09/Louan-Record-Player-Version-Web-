@@ -1,10 +1,82 @@
+/* =====================================================================
+   TEMAS DE COLOR
+   ---------------------------------------------------------------------
+   Los colores de la interfaz salen de estas variables. El tema se elige
+   con el atributo data-theme del <html> (lo maneja settings.js):
+   dark (por defecto) | light | warm | cool
+   ===================================================================== */
+:root,
+:root[data-theme="dark"] {
+    --bg: #1b1b1b;            /* fondo de la página y de los menús */
+    --card: #353535;          /* tarjeta principal y barra inferior */
+    --text: #ffffff;          /* texto de los menús */
+    --btn-bg: #efefef;        /* botones del formulario */
+    --btn-text: #000000;
+    --field-bg: #ffffff;      /* cajas de texto y selector */
+    --field-text: #000000;
+    --accent: #8a8a8a;        /* relleno de la barra de volumen */
+    --ring: #ffffff;          /* contorno del tema seleccionado */
+    --danger: #b3261e;        /* texto del botón de borrar */
+    --icon-filter: none;      /* los íconos son PNG blancos */
+    --card-glow: none;
+    --btn-glow: none;
+    --ctl-h: 30px;            /* alto de botones, campos y barra de volumen */
+}
 
+/* Blanco y claro */
+:root[data-theme="light"] {
+    --bg: #e4e4e8;
+    --card: #ffffff;
+    --text: #1f1f24;
+    --btn-bg: #2f2f35;
+    --btn-text: #ffffff;
+    --field-bg: #ffffff;
+    --field-text: #1f1f24;
+    --accent: #a4a4b0;
+    --ring: #2f2f35;
+    --danger: #ff8f86;
+    --icon-filter: invert(1); /* íconos blancos -> negros */
+    --card-glow: 0 6px 24px rgba(0, 0, 0, 0.12);
+}
 
+/* Cálido y relajante */
+:root[data-theme="warm"] {
+    --bg: #2b1d17;
+    --card: #5c3d2e;
+    --text: #fff1e0;
+    --btn-bg: #f3c98b;
+    --btn-text: #3b2314;
+    --field-bg: #fff4e3;
+    --field-text: #3b2314;
+    --accent: #d9822b;
+    --ring: #ffd9a0;
+    --danger: #a12b1b;
+    --icon-filter: sepia(0.55) saturate(1.5) brightness(1.05);
+}
+
+/* Frío y eléctrico */
+:root[data-theme="cool"] {
+    --bg: #050816;
+    --card: #0f1a4a;
+    --text: #e6f6ff;
+    --btn-bg: #00e5ff;
+    --btn-text: #021028;
+    --field-bg: #e6f6ff;
+    --field-text: #021028;
+    --accent: #7c4dff;
+    --ring: #00e5ff;
+    --danger: #c2002f;
+    --icon-filter: drop-shadow(0 0 4px #00e5ff);
+    --card-glow: 0 0 0 2px rgba(0, 229, 255, 0.55), 0 0 36px rgba(61, 90, 254, 0.55);
+    --btn-glow: 0 0 10px rgba(0, 229, 255, 0.6);
+}
 
 body {
     margin: 0 auto;
     padding: 0 auto;
-    background: #1b1b1b;
+    background: var(--bg);
+    color: var(--text);
+    transition: background-color 0.3s ease;
     font-family: initial;
     display: flex;
     justify-items: center;
@@ -21,14 +93,15 @@ body {
 
     width: 55%;
     height: 750px;
-    background: #353535;
+    background: var(--card);
+    box-shadow: var(--card-glow, none);
     position: relative;
 
     justify-content: center;
     align-items: center;
     border-radius: 70px;
     transform: translate(0, 0);
-    transition: transform 0.3s ease;
+    transition: transform 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 /* Zona del tocadiscos */
@@ -195,6 +268,14 @@ body {
 }
 
 
+/* Los íconos son PNG blancos: cada tema los tiñe con --icon-filter */
+.btn,
+.add-btn,
+.set-btn,
+.icons img {
+    filter: var(--icon-filter, none);
+}
+
 /* Botón + */
 .add-btn {
     position: absolute;
@@ -256,7 +337,7 @@ body {
 .menu {
   position: fixed;
   
-  color: white;
+  color: var(--text);
   transition: transform 0.3s ease;
   z-index: 1000;
 }
@@ -265,7 +346,7 @@ body {
     padding-left: 30px;
     top: -100px;
     font-size: 3em;
-    color: white;
+    color: var(--text);
     height: 25px;
 }
 
@@ -343,6 +424,10 @@ body {
 
     border: none;
     border-radius: 10px;
+
+    background: var(--btn-bg);
+    color: var(--btn-text);
+    box-shadow: var(--btn-glow, none);
 }
 
 .menu button:hover{
@@ -378,6 +463,12 @@ body {
     opacity: 0.4;
 }
 
+.menu input[type="text"],
+.menu select{
+    background: var(--field-bg);
+    color: var(--field-text);
+}
+
 .menu input:hover{
     opacity: 0.4;
 }
@@ -407,7 +498,7 @@ body {
 
 .up {
 
-    transform: translateY(18.5%);
+    transform: translateY(var(--shift, 18.5%));
 }
 
 .up.active {
@@ -483,6 +574,185 @@ body {
   transform: translateX(125px);
 }
 
+
+
+/* =====================================================================
+   CONFIGURACIÓN (panel que se despliega desde arriba)
+   Los botones, la barra de volumen y los textos reutilizan el estilo de
+   los botones del formulario (.menu button / .menu input).
+   ===================================================================== */
+.top {
+    top: 0;
+    left: 0;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 22px 40px 28px;
+  
+    border-radius: 0 0 40px 40px;
+    transform: translateY(-100%);
+    transition: transform 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.top.active {
+    transform: translateY(0);
+
+}
+
+.set-form h2 {
+    height: auto;
+    margin: 0 0 14px;
+    padding: 0;
+    text-align: center;
+}
+
+.set-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(325px, 1fr));
+    gap: 20px 48px;
+    max-width: 1150px;
+    margin: 0 auto;
+}
+
+.set-box {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 325px;
+    max-width: 100%;
+    justify-self: center;
+}
+
+.set-box label {
+    margin: 0;
+}
+
+.set-note {
+    min-height: 1.2em;
+    font-size: 1.15em;
+    line-height: 1.1;
+    opacity: 0.85;
+}
+
+/* Cuatro temas en dos columnas */
+.theme-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.menu .theme-grid button,
+.menu .theme-grid button:hover {
+    width: 100%;
+    margin: 0;
+    padding: 0 6px;
+    font-size: 1.2em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.menu .theme-grid button.sel {
+    box-shadow: 0 0 0 3px var(--ring);
+}
+
+/* Muestra de color dentro del botón de cada tema */
+.sw {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    margin-right: 6px;
+    border-radius: 50%;
+    vertical-align: -2px;
+    border: 2px solid rgba(0, 0, 0, 0.55);
+}
+
+.sw-dark  { background: linear-gradient(135deg, #353535 50%, #1b1b1b 50%); }
+.sw-light { background: linear-gradient(135deg, #ffffff 50%, #e4e4e8 50%); }
+.sw-warm  { background: linear-gradient(135deg, #5c3d2e 50%, #f3c98b 50%); }
+.sw-cool  { background: linear-gradient(135deg, #0f1a4a 50%, #00e5ff 50%); }
+
+.menu .set-box button,
+.menu .set-box button:hover {
+    margin: 0;
+}
+
+#deleteAll,
+#deleteAll:hover {
+    color: var(--danger);
+}
+
+/* Barra de volumen: mismo alto y esquinas que los botones; se rellena
+   según el valor (--val lo escribe settings.js) */
+.menu input[type="range"] {
+    -webkit-appearance: none;
+    appearance: none;
+    height: var(--ctl-h);
+    padding: 0;
+    margin: 0;
+    cursor: pointer;
+    outline: none;
+    background: linear-gradient(to right,
+        var(--accent) 0, var(--accent) var(--val, 100%),
+        var(--btn-bg) var(--val, 100%), var(--btn-bg) 100%);
+    box-shadow: var(--btn-glow, none);
+}
+
+.menu input[type="range"]:hover {
+    opacity: 1;
+}
+
+.menu input[type="range"]::-webkit-slider-runnable-track {
+    height: var(--ctl-h);
+    background: transparent;
+}
+
+.menu input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    box-sizing: border-box;
+    width: 16px;
+    height: var(--ctl-h);
+    border-radius: 10px;
+    border: 3px solid var(--btn-bg);
+    background: var(--btn-text);
+}
+
+.menu input[type="range"]::-moz-range-track {
+    height: var(--ctl-h);
+    background: transparent;
+}
+
+.menu input[type="range"]::-moz-range-thumb {
+    box-sizing: border-box;
+    width: 16px;
+    height: var(--ctl-h);
+    border-radius: 10px;
+    border: 3px solid var(--btn-bg);
+    background: var(--btn-text);
+}
+
+/* Con el panel de configuración abierto la página no se desplaza */
+/* Solo en <html>: si el <body> también llevara overflow:hidden recortaría
+   la tarjeta cuando baja y taparía los botones de abajo. */
+html.settings-open {
+    overflow: hidden;
+    overscroll-behavior: none;
+}
+
+/* Alertas (SweetAlert2) con los colores del tema y por encima de todo */
+html body .swal2-container {
+    z-index: 2000;
+}
+
+html body .swal2-popup {
+    background: var(--card);
+    color: var(--text);
+}
+
+html body .swal2-title,
+html body .swal2-html-container {
+    color: var(--text);
+}
 
 
 
@@ -669,7 +939,7 @@ body {
         align-items: center;
         height: calc(var(--bar-h) + var(--sab));
         padding: 0 calc(var(--sar) + 18px) var(--sab) calc(var(--sal) + 18px);
-        background: #353535;
+        background: var(--card);
         border-radius: 24px 24px 0 0;
         box-shadow: 0 -6px 18px rgba(0, 0, 0, 0.45);
     }
@@ -733,7 +1003,7 @@ body {
     /* ---------- Menús (agregar disco / reproduciendo / colección) ---------- */
     .menu {
         box-sizing: border-box;
-        background: #1b1b1b;
+        background: var(--bg);
         padding-left: var(--sal);
         padding-right: var(--sar);
     }
@@ -990,4 +1260,64 @@ body {
     #advan  { grid-row: 1; grid-column: 5; }
     #turns  { grid-row: 2; grid-column: 2; }
     #break  { grid-row: 2; grid-column: 4; }
+}
+
+
+/* ---------- Teléfono: panel de configuración y orden de la barra ---------- */
+@media (max-width: 900px), (max-height: 520px) and (orientation: landscape) {
+
+    :root {
+        --ctl-h: 46px;
+    }
+
+    /* Barra inferior: agregar y ajustes a la izquierda; lista y colección a la derecha */
+    .add-btn { order: 1; margin-right: 14px; }
+    .set-btn { order: 2; margin-right: auto; }
+    .icons   { order: 3; }
+
+    .menu.top {
+        top: 0;
+        left: 0;
+        right: 0;
+        width: 100%;
+        height: auto;
+        max-height: calc(100% - var(--bar-h) - var(--sab));
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        overscroll-behavior: contain;
+        padding: calc(var(--sat) + 8px) var(--sar) 18px var(--sal);
+        border-radius: 0 0 28px 28px;
+    }
+
+    .set-form {
+        padding: 0 16px;
+    }
+
+    .set-grid {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 22px;
+    }
+
+    .set-box {
+        width: 100%;
+        gap: 10px;
+    }
+
+    .menu .theme-grid button,
+    .menu .theme-grid button:hover {
+        font-size: 1.15em;
+    }
+
+    .menu .set-box button,
+    .menu .set-box button:hover {
+        font-size: 1.3em;
+    }
+
+    .menu input[type="range"]::-webkit-slider-thumb {
+        width: 20px;
+    }
+
+    .menu input[type="range"]::-moz-range-thumb {
+        width: 20px;
+    }
 }

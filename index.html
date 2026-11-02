@@ -5,6 +5,15 @@
 <title>Louan Record Player</title>
 <link rel="icon" href="icon.png" type="image/png">
 <link rel="stylesheet" href="mStyle.css">
+<script>
+    // Tema guardado en localStorage: se aplica antes de pintar la página
+    try {
+        var saved = JSON.parse(localStorage.getItem("louanSettings"));
+        if (saved && /^(dark|light|warm|cool)$/.test(saved.theme)) {
+            document.documentElement.setAttribute("data-theme", saved.theme);
+        }
+    } catch (e) {}
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -41,7 +50,7 @@
 
     
         <div  class="guiBtn">
-        
+        <img id="seting" src="images/txt_33.png" class="set-btn"></img>
         <img id="add" src="images/txt_6.png" class="add-btn"></img>
         
         <div class="icons">
@@ -223,6 +232,41 @@
          
     </div>
 
+    <div id="menuTop" class="menu top" >
+        <div class="set-form">
+            <h2 class="caveat-brush-regular">Settings</h2>
+            <div class="set-grid">
+
+                <!--Colores-->
+                <div class="set-box">
+                    <label class="caveat-brush-regular">Color Theme</label>
+                    <div class="theme-grid">
+                        <button id="theme-dark" class="caveat-brush-regular" data-theme="dark"><span class="sw sw-dark"></span>Dark Gray</button>
+                        <button id="theme-light" class="caveat-brush-regular" data-theme="light"><span class="sw sw-light"></span>Bright White</button>
+                        <button id="theme-warm" class="caveat-brush-regular" data-theme="warm"><span class="sw sw-warm"></span>Warm Calm</button>
+                        <button id="theme-cool" class="caveat-brush-regular" data-theme="cool"><span class="sw sw-cool"></span>Cool Electric</button>
+                    </div>
+                    <button id="saveTheme" class="caveat-brush-regular">Save Colors</button>
+                    <span id="themeNote" class="set-note caveat-brush-regular"></span>
+                </div>
+
+                <!--Volumen-->
+                <div class="set-box">
+                    <label class="caveat-brush-regular" for="volume">Volume: <span id="volumeValue">100%</span></label>
+                    <input id="volume" type="range" min="0" max="100" step="1" value="100" aria-label="Volume">
+                </div>
+
+                <!--Borrar colección-->
+                <div class="set-box">
+                    <label class="caveat-brush-regular">Your Collection</label>
+                    <button id="deleteAll" class="caveat-brush-regular">Delete Entire Collection</button>
+                    <span class="set-note caveat-brush-regular">Removes every record and its songs. You will be asked twice.</span>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
     <div id="menuBottom" class="menu bottom" >
         <h2 class="caveat-brush-regular">Your Collection</h2>
         <div id="rec-colect" class="rec-colect">
@@ -232,6 +276,7 @@
 
 
 <script src="displey.js"></script>
+<script src="settings.js"></script>
 <script src="recordplayer.js"></script>
 </body>
 </html>

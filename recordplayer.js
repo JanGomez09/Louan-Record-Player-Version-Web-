@@ -445,6 +445,7 @@ function AudioStart() {
 
     currentTrack = 0;
     audio = new Audio();
+    audio.volume = (typeof currentVolume === "number") ? currentVolume : 1; // volumen de Configuración
     audio.src = URL.createObjectURL(audioList[currentTrack]);
     audio.play();
 

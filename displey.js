@@ -4,6 +4,7 @@ const btnColect = document.getElementById("colect");
 const btnSeting = document.getElementById("seting");
 
 const interface = document.getElementById("app");
+const menuTop = document.getElementById("menuTop");
 
 
 
@@ -56,6 +57,8 @@ btnSeting.addEventListener("click", () => {
   interface.classList.toggle("up");
 
   cerrarTodos();
+  // El panel de configuración baja desde arriba junto con la tarjeta
+  if (interface.classList.contains("up")) menuTop.classList.add("active");
 });
 
 
@@ -63,6 +66,7 @@ function cerrarTodos() {
   menuLeft.classList.remove("active");
   menuRight.classList.remove("active");
   menuBottom.classList.remove("active");
+  menuTop.classList.remove("active");
 }
 
 
