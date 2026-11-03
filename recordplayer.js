@@ -130,6 +130,44 @@ DelB.addEventListener('click', (e) => {
 });
 
 
+// ----- LPx2: caras C y D (segundo disco) -----
+// Mismo funcionamiento que las caras A y B: archivos de audio + tracklist.
+const extraSides = {
+    C: { files: [], tracks: [], count: 0 },
+    D: { files: [], tracks: [], count: 0 }
+};
+
+["C", "D"].forEach(function (letter) {
+
+    document.getElementById("side" + letter).addEventListener("change", (e) => {
+        extraSides[letter].files = Array.from(e.target.files);
+    });
+
+    document.getElementById("btnS" + letter).addEventListener("click", () => {
+        const s = extraSides[letter];
+        const text = document.getElementById("inpS" + letter).value;
+
+        s.count++;
+        const song = letter + s.count + " " + text;
+        s.tracks.push(song);
+
+        const li = document.createElement("li");
+        li.textContent = song;
+        document.getElementById("ls" + letter).appendChild(li);
+    });
+
+    document.getElementById("btnDelS" + letter).addEventListener("click", () => {
+        const s = extraSides[letter];
+
+        if (s.tracks.length > 0) {
+            s.tracks.pop();
+            s.count--;
+            const list = document.getElementById("ls" + letter);
+            if (list.lastElementChild) list.removeChild(list.lastElementChild);
+        }
+    });
+});
+
 //audios
 
 
@@ -147,19 +185,21 @@ upB.addEventListener('change', (e) => {
 
 //formato
 
-btnformat.addEventListener('change', function(e) {
-switch (btnformat.value) {
-    case "SP":
-    document.getElementById("formatShow").src = "images/txt_11.png";
-        break;
-    case "EP":
-    document.getElementById("formatShow").src = "images/txt_12.png";
-        break;
-    case "LP":
-        document.getElementById("formatShow").src = "images/txt_10.png";
-    break;
+// Muestra el formato elegido y, solo con LPx2, los campos de las caras C y D
+function updateFormatUI() {
+    const images = {
+        SP: "images/txt_11.png",
+        EP: "images/txt_12.png",
+        LP: "images/txt_10.png",
+        LPx2: "images/txt_10.png"
+    };
+
+    document.getElementById("formatShow").src = images[btnformat.value] || images.LP;
+    document.getElementById("menuLeft").classList.toggle("is-lpx2", btnformat.value === "LPx2");
 }
-});
+
+btnformat.addEventListener('change', updateFormatUI);
+updateFormatUI();   // el navegador puede recordar el valor del selector al recargar
 
 //portada
 
@@ -217,7 +257,13 @@ btnRec.addEventListener("click", () => {
     const recform = btnformat.value;
     const recCover =  imagenGlobal;
 
-    if (!recName || !recArti || !recform || !recCover || trackA.length === 0 || trackB.length === 0 || recAside.length === 0 || recBside.length === 0) {
+    const isLpx2 = recform === "LPx2";
+    const missingExtra = isLpx2 && (
+        extraSides.C.tracks.length === 0 || extraSides.D.tracks.length === 0 ||
+        extraSides.C.files.length === 0 || extraSides.D.files.length === 0
+    );
+
+    if (!recName || !recArti || !recform || !recCover || trackA.length === 0 || trackB.length === 0 || recAside.length === 0 || recBside.length === 0 || missingExtra) {
         Swal.fire("Error", "Please fill in all fields and select at least one track for each side.", "error");
         return;
     }
@@ -234,6 +280,13 @@ btnRec.addEventListener("click", () => {
         tracksB: trackB,
 
     };
+
+    if (isLpx2) {
+        record.sideC = extraSides.C.files;
+        record.sideD = extraSides.D.files;
+        record.tracksC = extraSides.C.tracks;
+        record.tracksD = extraSides.D.tracks;
+    }
 
     colection.push(record);
 
@@ -261,12 +314,12 @@ btnRec.addEventListener("click", () => {
     cover.dataset.id = record.id;
     cover.className = "recPanel";
 
-    if (recform == "LP") {
-        disc.src = "txt_10.png";
-    } else if (recform == "EP") {
-        disc.src = "txt_12.png";
+    if (recform == "EP") {
+        disc.src = "images/txt_12.png";
     } else if (recform == "SP") {
-        disc.src = "txt_11.png";
+        disc.src = "images/txt_11.png";
+    } else {
+        disc.src = "images/txt_10.png";   // LP y LPx2
     }
     disc.id = recName + recform;
     disc.className = 'discPanel';
@@ -297,6 +350,7 @@ function clear() {
     document.getElementById("name").value = "";
     document.getElementById("artist").value = ""; 
     btnformat.value = "SP";
+    updateFormatUI();
     showcover.src = "images/txt_8.png";
     document.getElementById("lsA").innerHTML = "";
     document.getElementById("lsB").innerHTML = "";
@@ -310,6 +364,15 @@ function clear() {
     iA = 0;
     iB = 0;
     imagenGlobal = null;
+
+    // LPx2: caras C y D (se crean objetos nuevos porque el disco guardado conserva los anteriores)
+    extraSides.C = { files: [], tracks: [], count: 0 };
+    extraSides.D = { files: [], tracks: [], count: 0 };
+    ["C", "D"].forEach(function (letter) {
+        document.getElementById("ls" + letter).innerHTML = "";
+        document.getElementById("side" + letter).value = "";
+        document.getElementById("inpS" + letter).value = "";
+    });
 
     inpSA.value = "";
     inpSB.value = "";
@@ -339,6 +402,8 @@ document.addEventListener("click", function (e) {
 
     found.sideA = audioData.sideA;
     found.sideB = audioData.sideB;
+    found.sideC = audioData.sideC;
+    found.sideD = audioData.sideD;
 
     currentRecord = found;
 
@@ -361,39 +426,46 @@ const noo = document.getElementById("noo");
 
 const curA = document.getElementById("curA");
 const curB = document.getElementById("curB");
+const curC = document.getElementById("curC");
+const curD = document.getElementById("curD");
+
+// Botón para alternar entre el disco A y el disco B (solo visible con un LPx2)
+const discBtn = document.getElementById("discSwap");
+
+function fillTracklist(list, tracks) {
+    list.innerHTML = "";
+
+    (tracks || []).forEach(track => {
+        const li = document.createElement('li');
+        li.textContent = track;
+        list.appendChild(li);
+    });
+}
 
 function pl() {
 
-    
+    side = "A";   // un disco nuevo siempre empieza por la cara A
+    const isLpx2 = currentRecord.format === "LPx2";
+
     curName.textContent = currentRecord.name;
     curArtist.textContent = currentRecord.artist;
-    curSide.textContent = currentRecord.format + " Side: A";
+    curSide.textContent = sideLabel();
     curCover.src = currentRecord.cover;
 
-    // Limpiar listas anteriores
-    curA.innerHTML = "";
-    curB.innerHTML = "";
+    // Tracklists (C y D solo existen en un LPx2)
+    fillTracklist(curA, currentRecord.tracksA);
+    fillTracklist(curB, currentRecord.tracksB);
+    fillTracklist(curC, currentRecord.tracksC);
+    fillTracklist(curD, currentRecord.tracksD);
 
-    // Agregar tracks de Side A
-    currentRecord.tracksA.forEach(track => {
-        const liA = document.createElement('li');
-        liA.textContent = track;
-        curA.appendChild(liA);
-    });
 
-    // Agregar tracks de Side B
-    currentRecord.tracksB.forEach(track => {
-        const liB = document.createElement('li');
-        liB.textContent = track;
-        curB.appendChild(liB);
-    });
-
-    
     noo.style.visibility = "hidden";
     curPanel.className = "rec-form";
+    curPanel.classList.toggle("is-lpx2", isLpx2);
     curPanel.style.visibility = "visible";
+    discBtn.hidden = !isLpx2;
 
-    if (currentRecord.format === "LP") {
+    if (currentRecord.format === "LP" || isLpx2) {
         curDisc.src = "images/txt_10.png";
         curDisc.className = "vinyl2";
         arm.className = "armPlay";
@@ -479,49 +551,130 @@ function playAudio() {
     if (attempt && attempt.catch) attempt.catch(reportAudioError);
 }
 
-function AudioStart() {
+// ----- Caras y discos -----
+// Un LP tiene las caras A y B. Un LPx2 tiene dos discos: el disco A (caras A y B)
+// y el disco B (caras C y D).
+
+function discOf(s) {
+    return (s === "C" || s === "D") ? "B" : "A";
+}
+
+function otherSide(s) {
+    return { A: "B", B: "A", C: "D", D: "C" }[s];
+}
+
+function sideLabel() {
+    if (currentRecord.format === "LPx2") {
+        return "Disc " + discOf(side) + " - Side " + side;
+    }
+    return currentRecord.format + " Side: " + side;
+}
+
+// Iconos y brazo según se esté reproduciendo o no
+function showPlayingState() {
+    playBtn.src = "images/txt_14.png";                                    // icono de pausa
+    arm.className = currentRecord.format === "SP" ? "armPlay2" : "armPlay";
+}
+
+function showPausedState() {
+    playBtn.src = "images/txt_15.png";                                    // icono de reproducción
+    arm.className = "arm";
+}
+
+// Pasa a otra cara (o a la primera cara del otro disco) y la reproduce
+function playSide(newSide) {
     if (!currentRecord) return;
 
-    const audioList = side === "A" ? currentRecord.sideA : currentRecord.sideB;
-    if (!audioList || audioList.length === 0) {
-        console.warn("No audio files available for side", side);
-        return;
-    }
+    side = newSide;
+    curSide.textContent = sideLabel();
 
-    if (audio) {
-        audio.pause();
-        audio.onerror = null;
-        audio.src = "";
-    }
-
-    currentTrack = 0;
-    audio = new Audio();
-    audio.volume = (typeof currentVolume === "number") ? currentVolume : 1; // volumen de Configuración
-    audio.src = audioUrl(audioList[currentTrack]);
-    audio.onerror = () => reportAudioError(audio.error);
-    playAudio();
-
-    if (audioList.length > 1) {
-        audio.addEventListener('ended', () => {
-            currentTrack++;
-            if (currentTrack < audioList.length) {
-                audio.src = audioUrl(audioList[currentTrack]);
-                playAudio();
-                
-            }
-        });
+    if (AudioStart()) {
+        showPlayingState();
+    } else {
+        showPausedState();
     }
 }
 
-flipBtn.addEventListener("click", () => {
-    if (side === "A") {
-        side = "B";
-        curSide.textContent = currentRecord.format + " Side: B";
-    } else {
-        side = "A";
-        curSide.textContent = currentRecord.format + " Side: A";
+// Qué cara sigue cuando una termina, según las opciones de Configuración
+// (window.playbackOptions lo escribe settings.js). Devuelve null si no hay cambio automático.
+function nextSideAfterEnd() {
+    const options = window.playbackOptions || {};
+    let next = null;
+
+    if (side === "A" || side === "C") {
+        if (options.autoFlip) next = otherSide(side);                 // A -> B   |   C -> D
+    } else if (side === "B" && currentRecord.format === "LPx2") {
+        if (options.autoDisc) next = "C";                             // fin del disco A -> disco B
     }
-    AudioStart();
+
+    if (next) {
+        const files = currentRecord["side" + next];
+        if (!files || files.length === 0) return null;
+    }
+
+    return next;
+}
+
+// Cuando termina una canción: pasa a la siguiente de la cara y, al acabar la cara, aplica el cambio automático
+function onTrackEnded(audioList) {
+    if (!currentRecord) return;
+
+    currentTrack++;
+
+    if (currentTrack < audioList.length) {
+        audio.reportedError = false;
+        audio.src = audioUrl(audioList[currentTrack]);
+        playAudio();
+        return;
+    }
+
+    const next = nextSideAfterEnd();
+
+    if (next) {
+        playSide(next);
+    } else {
+        showPausedState();   // fin de la cara: el brazo se levanta
+    }
+}
+
+function AudioStart() {
+    if (!currentRecord) return false;
+
+    const audioList = currentRecord["side" + side];
+    if (!audioList || audioList.length === 0) {
+        console.warn("No audio files available for side", side);
+        return false;
+    }
+
+    // Se reutiliza el mismo elemento de audio: así el cambio automático de cara o de disco
+    // sigue sonando aunque en ese momento no haya un toque del usuario.
+    if (!audio) audio = new Audio();
+
+    audio.pause();
+    audio.onerror = null;
+    audio.onended = null;
+
+    currentTrack = 0;
+    audio.reportedError = false;
+    audio.volume = (typeof currentVolume === "number") ? currentVolume : 1; // volumen de Configuración
+    audio.src = audioUrl(audioList[currentTrack]);
+    audio.onerror = () => reportAudioError(audio.error);
+    audio.onended = () => onTrackEnded(audioList);
+    playAudio();
+
+    return true;
+}
+
+// Cambiar de cara dentro del mismo disco (A <-> B, o C <-> D en el disco B de un LPx2)
+flipBtn.addEventListener("click", () => {
+    if (!currentRecord) return;
+    playSide(otherSide(side));
+});
+
+// Alternar entre el disco A y el disco B (solo LPx2): empieza por la primera cara del otro disco
+discBtn.addEventListener("click", () => {
+    if (!currentRecord || currentRecord.format !== "LPx2") return;
+    playSide(discOf(side) === "A" ? "C" : "A");
 });
 
 rewiBtn.addEventListener("click", () => {
@@ -537,19 +690,11 @@ playBtn.addEventListener("click", () => {
     if (audio) {
         if (audio.paused) {
             playAudio();
-            playBtn.src = "txt_14.png"; // Cambia a icono de pausa
-            if (currentRecord.format === "LP") {
-                arm.className = "armPlay";
-            } else if (currentRecord.format === "EP") {
-                arm.className = "armPlay";
-            } else if (currentRecord.format === "SP") {
-                arm.className = "armPlay2";
-            }
+            showPlayingState();
         }
         else {
             audio.pause();
-            playBtn.src = "images/txt_15.png"; // Cambia a icono de reproducción
-            arm.className = "arm";
+            showPausedState();
         }
     }
 });
@@ -577,9 +722,14 @@ stopBtn.addEventListener("click", () => {
         curCover.src = "images/txt_8.png";
         curA.innerHTML = "";
         curB.innerHTML = "";
+        curC.innerHTML = "";
+        curD.innerHTML = "";
+        curPanel.classList.remove("is-lpx2");
+        discBtn.hidden = true;
         noo.style.visibility = "visible";
         side = "A";
         audio.onerror = null;
+        audio.onended = null;
         audio.src = "";
     }
 });
@@ -627,7 +777,9 @@ function saveAudio(record){
 
         id: record.id,
         sideA: record.sideA,
-        sideB: record.sideB
+        sideB: record.sideB,
+        sideC: record.sideC,
+        sideD: record.sideD
 
     });
 
@@ -644,7 +796,9 @@ function saveCollection(){
         format:r.format,
         cover:r.cover,
         tracksA:r.tracksA,
-        tracksB:r.tracksB
+        tracksB:r.tracksB,
+        tracksC:r.tracksC,
+        tracksD:r.tracksD
 
     }));
 
@@ -715,7 +869,7 @@ function loadCollection(){
 
         cover.className="recPanel";
 
-        if(record.format==="LP")
+        if(record.format==="LP" || record.format==="LPx2")
             disc.src="images/txt_10.png";
 
         if(record.format==="EP")
