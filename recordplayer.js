@@ -429,6 +429,48 @@ const stopBtn = document.getElementById("break");
 let audio = null;
 let currentTrack = 0;
 
+// Convierte el archivo guardado en una URL reproducible. Algunos Android entregan
+// los archivos sin tipo MIME y el WebView no los reproduce: en ese caso se le asigna uno.
+function audioUrl(file) {
+    let blob = file;
+
+    if (!file.type || file.type.indexOf("audio/") !== 0) {
+        const name = (file.name || "").toLowerCase();
+        let type = "audio/mpeg";
+        if (name.endsWith(".m4a") || name.endsWith(".mp4") || name.endsWith(".aac")) type = "audio/mp4";
+        else if (name.endsWith(".wav")) type = "audio/wav";
+        else if (name.endsWith(".ogg") || name.endsWith(".opus")) type = "audio/ogg";
+        else if (name.endsWith(".flac")) type = "audio/flac";
+        blob = new Blob([file], { type: type });
+    }
+
+    return URL.createObjectURL(blob);
+}
+
+// Avisa cuando el audio no se puede reproducir (antes fallaba en silencio)
+function reportAudioError(err) {
+    if (err && err.name === "AbortError") return;   // cambio de pista, es normal
+    if (audio) {                                     // un solo aviso por pista
+        if (audio.reportedError) return;
+        audio.reportedError = true;
+    }
+
+    const media = (audio && audio.error) ? " (media error " + audio.error.code + ")" : "";
+    const detail = ((err && err.name) ? err.name : "Error") + ((err && err.message) ? ": " + err.message : "") + media;
+
+    console.error("Audio error:", err, audio && audio.error);
+
+    if (window.Swal) {
+        Swal.fire("Audio problem", "This track could not be played. " + detail, "error");
+    }
+}
+
+function playAudio() {
+    if (!audio) return;
+    const attempt = audio.play();
+    if (attempt && attempt.catch) attempt.catch(reportAudioError);
+}
+
 function AudioStart() {
     if (!currentRecord) return;
 
@@ -440,21 +482,23 @@ function AudioStart() {
 
     if (audio) {
         audio.pause();
+        audio.onerror = null;
         audio.src = "";
     }
 
     currentTrack = 0;
     audio = new Audio();
     audio.volume = (typeof currentVolume === "number") ? currentVolume : 1; // volumen de Configuración
-    audio.src = URL.createObjectURL(audioList[currentTrack]);
-    audio.play();
+    audio.src = audioUrl(audioList[currentTrack]);
+    audio.onerror = () => reportAudioError(audio.error);
+    playAudio();
 
     if (audioList.length > 1) {
         audio.addEventListener('ended', () => {
             currentTrack++;
             if (currentTrack < audioList.length) {
-                audio.src = URL.createObjectURL(audioList[currentTrack]);
-                audio.play();
+                audio.src = audioUrl(audioList[currentTrack]);
+                playAudio();
                 
             }
         });
@@ -484,7 +528,7 @@ playBtn.addEventListener("click", () => {
     if (!currentRecord) return;
     if (audio) {
         if (audio.paused) {
-            audio.play();
+            playAudio();
             playBtn.src = "txt_14.png"; // Cambia a icono de pausa
             if (currentRecord.format === "LP") {
                 arm.className = "armPlay";
@@ -527,6 +571,7 @@ stopBtn.addEventListener("click", () => {
         curB.innerHTML = "";
         noo.style.visibility = "visible";
         side = "A";
+        audio.onerror = null;
         audio.src = "";
     }
 });
