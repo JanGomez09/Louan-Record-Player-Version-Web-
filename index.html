@@ -46,6 +46,7 @@
             <img id="fordw" src="images/txt_17.png"  class="btn"></img>
             <img id="advan"src="images/txt_26.png"  class="btn"></img>
             <img id="break" src="images/txt_24.png" class="btn"></img>
+            <img id="discSwap" src="images/txt_35.png" class="btn" alt="Switch disc" title="Switch disc (A / B)" hidden></img>
         </div>
 
     
@@ -108,6 +109,7 @@
                 <br>
                 <select class="caveat-brush-regular" id="format">
                     <option class="caveat-brush-regular" value="LP">Long Play</option>
+                    <option class="caveat-brush-regular" value="LPx2">Double Long Play (LPx2)</option>
                     <option class="caveat-brush-regular" value="EP">Extended Play</option>
                     
                     <option class="caveat-brush-regular" value="SP">Single Play</option>
@@ -129,6 +131,24 @@
                     <label class="caveat-brush-regular">Select your B side tracks</label>
                     <br>
                     <input id="sideB" class="caveat-brush-regular" type="file" accept="audio/*" multiple>
+                </div>
+
+                <!--LPx2: segundo disco (caras C y D)-->
+                <div class="lpx2-only">
+                    <br>
+                    <br>
+                    <div>
+                        <label class="caveat-brush-regular">Select your C side tracks</label>
+                        <br>
+                        <input id="sideC" class="caveat-brush-regular" type="file" accept="audio/*" multiple>
+                    </div>
+                    <br>
+                    <br>
+                    <div>
+                        <label class="caveat-brush-regular">Select your D side tracks</label>
+                        <br>
+                        <input id="sideD" class="caveat-brush-regular" type="file" accept="audio/*" multiple>
+                    </div>
                 </div>
             </div>
             <br>
@@ -169,6 +189,48 @@
                         <br>
                         <br>
                         <button id="btnDelSB" class="caveat-brush-regular" name="btnDelSB">Delete Last Track</button>
+                    </div>
+                </div>
+
+                <!--LPx2: tracklist del segundo disco (caras C y D)-->
+                <div class="lpx2-only">
+                    <br>
+                    <br>
+                    <div>
+                        <label class="caveat-brush-regular">Introduce the Record's C Side Tracklist:</label>
+                        <br>
+                        <ul id="lsC" class="caveat-brush-regular">
+
+                        </ul>
+                        <br>
+                        <input id="inpSC" class="caveat-brush-regular" type="text" name="inpSC">
+                        <br>
+                        <br>
+                        <div>
+                            <button id="btnSC" class="caveat-brush-regular" name="btnSC">Add Track</button>
+                            <br>
+                            <br>
+                            <button id="btnDelSC" class="caveat-brush-regular" name="btnDelSC">Delete Last Track</button>
+                        </div>
+                    </div>
+                    <br>
+                    <br>
+                    <div>
+                        <label class="caveat-brush-regular">Introduce the Record's D Side Tracklist:</label>
+                        <br>
+                        <ul id="lsD" class="caveat-brush-regular">
+
+                        </ul>
+                        <br>
+                        <input id="inpSD" class="caveat-brush-regular" type="text" name="inpSD">
+                        <br>
+                        <br>
+                        <div>
+                            <button id="btnSD" class="caveat-brush-regular" name="btnSD">Add Track</button>
+                            <br>
+                            <br>
+                            <button id="btnDelSD" class="caveat-brush-regular" name="btnDelSD">Delete Last Track</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -224,6 +286,20 @@
                     
                         </ul>
                     </div>
+                    <div class="lpx2-only">
+                        <label class="caveat-brush-regular">Side C</label>
+                        <br>
+                        <ul id="curC" class="caveat-brush-regular">
+
+                        </ul>
+                    </div>
+                    <div class="lpx2-only">
+                        <label class="caveat-brush-regular">Side D</label>
+                        <br>
+                        <ul id="curD" class="caveat-brush-regular">
+
+                        </ul>
+                    </div>
                 </div>
 
                 <button id="delete" class="caveat-brush-regular" >Delete Record</button>
@@ -254,6 +330,10 @@
                 <div class="set-box">
                     <label class="caveat-brush-regular" for="volume">Volume: <span id="volumeValue">100%</span></label>
                     <input id="volume" type="range" min="0" max="100" step="1" value="100" aria-label="Volume">
+
+                    <label class="caveat-brush-regular set-sub">Playback</label>
+                    <button id="autoFlip" class="caveat-brush-regular" aria-pressed="false" title="When a side ends, the other side of the same disc plays (A to B, C to D)">Auto Flip Side: Off</button>
+                    <button id="autoDisc" class="caveat-brush-regular" aria-pressed="false" title="LPx2 only: when side B ends, disc B starts playing (side C)">Auto Change Disc (LPx2): Off</button>
                 </div>
 
                 <!--Borrar colección-->
