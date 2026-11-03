@@ -460,8 +460,16 @@ function reportAudioError(err) {
 
     console.error("Audio error:", err, audio && audio.error);
 
+    // Pista para el usuario según el tipo de error del navegador
+    let hint = "";
+    if (audio && audio.error && audio.error.code === 3) {
+        hint = " The audio data looks damaged: try adding the record again with another copy of the file.";
+    } else if (audio && audio.error && audio.error.code === 4) {
+        hint = " The audio format is not supported by this device.";
+    }
+
     if (window.Swal) {
-        Swal.fire("Audio problem", "This track could not be played. " + detail, "error");
+        Swal.fire("Audio problem", "This track could not be played." + hint + " (" + detail + ")", "error");
     }
 }
 
