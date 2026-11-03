@@ -1,5 +1,5 @@
 // ===== Configuración de la página =====
-// Tema de colores, volumen del reproductor y borrado de la colección.
+// Tema de colores, volumen, cambio automático de cara/disco y borrado de la colección.
 // Las configuraciones se guardan en localStorage (clave "louanSettings");
 // la colección sigue guardándose en la clave "collection" (recordplayer.js).
 
@@ -7,12 +7,17 @@
 
     const SETTINGS_KEY = "louanSettings";
     const THEMES = ["dark", "light", "warm", "cool"];
-    const DEFAULTS = { theme: "dark", volume: 100 };
+    const DEFAULTS = { theme: "dark", volume: 100, autoFlip: false, autoDisc: false };
 
     // ---------- Lectura / escritura en localStorage ----------
 
     function loadSettings() {
-        const result = { theme: DEFAULTS.theme, volume: DEFAULTS.volume };
+        const result = {
+            theme: DEFAULTS.theme,
+            volume: DEFAULTS.volume,
+            autoFlip: DEFAULTS.autoFlip,
+            autoDisc: DEFAULTS.autoDisc
+        };
 
         try {
             const raw = JSON.parse(localStorage.getItem(SETTINGS_KEY));
@@ -22,6 +27,12 @@
             }
             if (raw && typeof raw.volume === "number" && isFinite(raw.volume)) {
                 result.volume = Math.min(100, Math.max(0, Math.round(raw.volume)));
+            }
+            if (raw && typeof raw.autoFlip === "boolean") {
+                result.autoFlip = raw.autoFlip;
+            }
+            if (raw && typeof raw.autoDisc === "boolean") {
+                result.autoDisc = raw.autoDisc;
             }
         } catch (e) {
             // Si el dato está dañado se usan los valores por defecto
@@ -49,6 +60,8 @@
     const volumeInput = document.getElementById("volume");
     const volumeValue = document.getElementById("volumeValue");
     const deleteAllBtn = document.getElementById("deleteAll");
+    const autoFlipBtn = document.getElementById("autoFlip");
+    const autoDiscBtn = document.getElementById("autoDisc");
 
     // ---------- Avisos ----------
 
@@ -152,6 +165,40 @@
         storeSettings();
     });
 
+    // ---------- Cambio automático de cara y de disco ----------
+    // Auto Flip Side: al terminar una cara pasa a la otra del mismo disco (A -> B, C -> D).
+    // Auto Change Disc (solo LPx2): al terminar la cara B pasa al disco B (cara C).
+    // recordplayer.js lee window.playbackOptions cada vez que termina una cara.
+
+    function syncPlaybackOptions() {
+        window.playbackOptions = { autoFlip: settings.autoFlip, autoDisc: settings.autoDisc };
+    }
+
+    function renderToggle(button, label, on) {
+        button.textContent = label + ": " + (on ? "On" : "Off");
+        button.classList.toggle("sel", on);
+        button.setAttribute("aria-pressed", on ? "true" : "false");
+    }
+
+    function renderPlaybackToggles() {
+        renderToggle(autoFlipBtn, "Auto Flip Side", settings.autoFlip);
+        renderToggle(autoDiscBtn, "Auto Change Disc (LPx2)", settings.autoDisc);
+    }
+
+    autoFlipBtn.addEventListener("click", function () {
+        settings.autoFlip = !settings.autoFlip;
+        syncPlaybackOptions();
+        renderPlaybackToggles();
+        storeSettings();
+    });
+
+    autoDiscBtn.addEventListener("click", function () {
+        settings.autoDisc = !settings.autoDisc;
+        syncPlaybackOptions();
+        renderPlaybackToggles();
+        storeSettings();
+    });
+
     // ---------- Borrar toda la colección (doble confirmación) ----------
 
     function resetPlayerPanel() {
@@ -166,6 +213,10 @@
         curCover.src = "images/txt_8.png";
         curA.innerHTML = "";
         curB.innerHTML = "";
+        curC.innerHTML = "";
+        curD.innerHTML = "";
+        curPanel.classList.remove("is-lpx2");
+        discBtn.hidden = true;
         noo.style.visibility = "visible";
         playBtn.src = "images/txt_15.png";
         side = "A";
@@ -282,5 +333,7 @@
     renderThemeUI();
     renderVolume(settings.volume);
     setVolume(settings.volume);
+    syncPlaybackOptions();
+    renderPlaybackToggles();
 
 })();
