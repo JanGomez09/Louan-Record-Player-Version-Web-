@@ -755,6 +755,33 @@ html body .swal2-html-container {
 }
 
 
+/* =====================================================================
+   FORMATO LPx2 (doble LP: discos A y B, con caras A/B y C/D)
+   Los campos extra del formulario, las listas del panel "Currently
+   Playing" y el botón de cambio de disco solo se ven con un LPx2.
+   ===================================================================== */
+.lpx2-only {
+    display: none;
+}
+
+.is-lpx2 .lpx2-only {
+    display: block;
+}
+
+#discSwap[hidden] {
+    display: none !important;
+}
+
+/* Interruptores de Configuración: mismo botón, con contorno cuando están activos */
+.menu button.sel {
+    box-shadow: 0 0 0 3px var(--ring);
+}
+
+.set-sub {
+    margin-top: 6px;
+}
+
+
 
 /* =====================================================================
    ADAPTACIÓN PARA TELÉFONOS (responsive)
@@ -765,11 +792,11 @@ html body .swal2-html-container {
    comportamiento: solo cambia cómo se acomodan en la pantalla.
    ===================================================================== */
 
-/* Ventanas / tabletas medianas: el diseño original necesita unos 780px
+/* Ventanas / tabletas medianas: el diseño original necesita unos 780px (860px con el botón de cambio de disco del LPx2)
    de ancho para no cortarse, así que se le da ese mínimo. */
 @media (min-width: 901px) {
     .app {
-        min-width: 780px;
+        min-width: 860px;
         margin-left: auto;
         margin-right: auto;
     }
@@ -1260,6 +1287,7 @@ html body .swal2-html-container {
     #advan  { grid-row: 1; grid-column: 5; }
     #turns  { grid-row: 2; grid-column: 2; }
     #break  { grid-row: 2; grid-column: 4; }
+    #discSwap { grid-row: 2; grid-column: 3; }   /* LPx2: entre cambiar cara y detener */
 }
 
 
