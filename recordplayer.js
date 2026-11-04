@@ -549,6 +549,73 @@ function playAudio() {
     if (attempt && attempt.catch) attempt.catch(reportAudioError);
 }
 
+// ----- Audio de mantenimiento (pantalla apagada en el teléfono) -----
+// Al terminar una canción el navegador suelta el "audio focus" de Android y, para empezar
+// la siguiente, tiene que pedirlo otra vez. Con la pantalla apagada Android puede negarlo
+// y la canción se pausa apenas empieza. Mientras suena el disco se reproduce en bucle un
+// audio completamente silencioso: así el sistema siempre ve un reproductor activo y el foco
+// no se suelta entre canción y canción. Se detiene solo cuando el disco deja de sonar.
+
+let keepAliveEl = null;
+let keepAliveTimer = null;
+
+function silentWavUrl() {
+    const seconds = 1, rate = 8000;
+    const dataSize = rate * seconds * 2;                 // 16 bits, mono
+    const view = new DataView(new ArrayBuffer(44 + dataSize));
+    const text = (offset, str) => { for (let i = 0; i < str.length; i++) view.setUint8(offset + i, str.charCodeAt(i)); };
+
+    text(0, "RIFF");  view.setUint32(4, 36 + dataSize, true);  text(8, "WAVE");
+    text(12, "fmt "); view.setUint32(16, 16, true);  view.setUint16(20, 1, true);  view.setUint16(22, 1, true);
+    view.setUint32(24, rate, true);  view.setUint32(28, rate * 2, true);  view.setUint16(32, 2, true);  view.setUint16(34, 16, true);
+    text(36, "data"); view.setUint32(40, dataSize, true);   // el resto son ceros = silencio
+
+    return URL.createObjectURL(new Blob([view.buffer], { type: "audio/wav" }));
+}
+
+function keepAliveStart() {
+    try {
+        if (!keepAliveEl) {
+            keepAliveEl = new Audio();
+            keepAliveEl.src = silentWavUrl();
+            keepAliveEl.loop = true;
+        }
+        if (keepAliveEl.paused) {
+            const attempt = keepAliveEl.play();
+            if (attempt && attempt.catch) attempt.catch(() => {});
+        }
+    } catch (e) {
+        console.warn("No se pudo iniciar el audio de mantenimiento", e);
+    }
+}
+
+function keepAliveStop() {
+    if (keepAliveEl && !keepAliveEl.paused) keepAliveEl.pause();
+}
+
+// El audio de mantenimiento sigue al reproductor: al pausarse o terminar el disco se apaga.
+// Se espera un momento porque entre una canción y la siguiente hay una pausa de milisegundos.
+function keepAliveCheck() {
+    clearTimeout(keepAliveTimer);
+    keepAliveTimer = setTimeout(() => {
+        if (!audio || audio.paused) {
+            // Aviso para diagnóstico: el sistema pausó el audio sin que el usuario lo pidiera
+            if (audio && audio.paused && !audio.ended && !audio.userPaused && document.visibilityState === "hidden") {
+                console.warn("[audio] El sistema pausó la reproducción con la app en segundo plano");
+            }
+            keepAliveStop();
+        }
+    }, 800);
+}
+
+// ----- Aviso al cerrar o refrescar mientras suena un disco -----
+window.addEventListener("beforeunload", (e) => {
+    if (audio && !audio.paused) {
+        e.preventDefault();
+        e.returnValue = "";   // el navegador muestra su propio mensaje de confirmación
+    }
+});
+
 // ----- Caras y discos -----
 // Un LP tiene las caras A y B. Un LPx2 tiene dos discos: el disco A (caras A y B)
 // y el disco B (caras C y D).
@@ -646,7 +713,12 @@ function AudioStart() {
 
     // Se reutiliza el mismo elemento de audio: así el cambio automático de cara o de disco
     // sigue sonando aunque en ese momento no haya un toque del usuario.
-    if (!audio) audio = new Audio();
+    if (!audio) {
+        audio = new Audio();
+        audio.addEventListener("play", keepAliveStart);
+        audio.addEventListener("pause", keepAliveCheck);
+    }
+    audio.userPaused = false;
 
     audio.pause();
     audio.onerror = null;
@@ -687,10 +759,12 @@ playBtn.addEventListener("click", () => {
     if (!currentRecord) return;
     if (audio) {
         if (audio.paused) {
+            audio.userPaused = false;
             playAudio();
             showPlayingState();
         }
         else {
+            audio.userPaused = true;
             audio.pause();
             showPausedState();
         }
@@ -707,6 +781,7 @@ advaBtn.addEventListener("click", () => {
 
 stopBtn.addEventListener("click", () => {
     if (audio) {
+        audio.userPaused = true;
         audio.pause();
         audio.currentTime = 0;
         playBtn.src = "images/txt_15.png";
@@ -729,6 +804,7 @@ stopBtn.addEventListener("click", () => {
         audio.onerror = null;
         audio.onended = null;
         audio.src = "";
+        keepAliveCheck();   // al vaciar el src el navegador descarta el evento "pause", se avisa aquí
     }
 });
 
