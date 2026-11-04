@@ -337,9 +337,7 @@ btnRec.addEventListener("click", () => {
 
     recIndex++;
 
-
-
-    
+    filterCollection();
 
     clear();
 
@@ -734,6 +732,51 @@ stopBtn.addEventListener("click", () => {
     }
 });
 
+// ----- Buscador de la colección -----
+// Filtra los discos mientras se escribe. Busca en el nombre del disco y en el artista,
+// sin distinguir mayúsculas ni acentos, y todas las palabras escritas deben coincidir.
+// Enter reproduce el primer resultado (igual que tocar su portada).
+const recSearch = document.getElementById("recSearch");
+const recNoResults = document.getElementById("recNoResults");
+
+function normalizeText(text) {
+    return String(text || "")
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .trim();
+}
+
+function filterCollection() {
+    const words = normalizeText(recSearch.value).split(/\s+/).filter(Boolean);
+    let visible = 0;
+
+    colection.forEach(record => {
+        const panel = document.getElementById("panel-" + record.id);
+        if (!panel) return;
+
+        const text = normalizeText(record.name + " " + record.artist);
+        const match = words.every(word => text.includes(word));
+
+        panel.hidden = !match;
+        if (match) visible++;
+    });
+
+    recNoResults.hidden = !(words.length > 0 && colection.length > 0 && visible === 0);
+}
+
+recSearch.addEventListener("input", filterCollection);
+
+recSearch.addEventListener("keydown", (e) => {
+    if (e.key !== "Enter") return;
+
+    const first = document.querySelector("#rec-colect > div:not([hidden]) .recPanel");
+    if (first) {
+        first.click();
+        recSearch.blur();   // en el teléfono baja el teclado
+    }
+});
+
 const deleteBtn = document.getElementById("delete");
 
 deleteBtn.addEventListener("click", () => {
@@ -756,6 +799,7 @@ deleteBtn.addEventListener("click", () => {
 
         const panelToRemove = document.getElementById("panel-" + currentRecord.id);
         if (panelToRemove) panelToRemove.remove();
+        filterCollection();
         Swal.fire("Deleted", "Alright, " + currentRecord.name + " has been removed from your collection.", "success");
         stopBtn.click(); // Detener reproducción y limpiar panel
     }

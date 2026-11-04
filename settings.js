@@ -236,6 +236,7 @@
         recIndex = 0;
         document.getElementById("rec-colect").innerHTML = "";
         saveCollection();
+        filterCollection();
 
         // 3) Borrar también las canciones guardadas en IndexedDB
         if (db) {
@@ -325,6 +326,13 @@
         if (e.key === "Escape" && menuTopEl.classList.contains("active")) {
             document.getElementById("seting").click();
         }
+    });
+
+    // ---------- Tocadiscos de cada tema ----------
+    // El CSS elige la imagen con la variable --turntable de cada tema. Se precargan todas
+    // para que al cambiar de tema (vista previa) no haya parpadeo.
+    ["text_1", "txt_36", "txt_37", "txt_38"].forEach(function (name) {
+        new Image().src = "images/" + name + ".png";
     });
 
     // ---------- Estado inicial ----------

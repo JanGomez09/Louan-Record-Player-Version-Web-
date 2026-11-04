@@ -348,7 +348,11 @@
     </div>
 
     <div id="menuBottom" class="menu bottom" >
-        <h2 class="caveat-brush-regular">Your Collection</h2>
+        <div class="col-head">
+            <h2 class="caveat-brush-regular">Your Collection</h2>
+            <input id="recSearch" class="caveat-brush-regular" type="text" placeholder="Search records..." autocomplete="off" enterkeyhint="search" aria-label="Search records">
+            <span id="recNoResults" class="caveat-brush-regular" hidden>No records match your search</span>
+        </div>
         <div id="rec-colect" class="rec-colect">
         </div>
     </div>
