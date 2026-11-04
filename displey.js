@@ -71,11 +71,3 @@ function cerrarTodos() {
 
 
 
-window.addEventListener('beforeunload', function (e) {
-    // Cancela el evento según el estándar moderno
-    e.preventDefault();
-    // Requerido por algunos navegadores más antiguos (como Chrome antes de ciertas versiones)
-    e.returnValue = '';
-});
-let isPlaying = true; // Cambia a false cuando el récord se detenga
-
