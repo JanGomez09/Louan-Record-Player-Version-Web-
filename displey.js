@@ -71,3 +71,4 @@ function cerrarTodos() {
 
 
 
+// El aviso al cerrar o refrescar mientras suena un disco está en recordplayer.js
