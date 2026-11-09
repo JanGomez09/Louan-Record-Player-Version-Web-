@@ -1415,3 +1415,8 @@ html body .swal2-html-container {
         font-size: 1.2em;
     }
 }
+
+/* ---------- Canción en curso (tracklist del panel "Currently Playing") ---------- */
+.now-playing {
+    font-weight: bold;
+}
