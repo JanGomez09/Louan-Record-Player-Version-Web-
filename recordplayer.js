@@ -67,9 +67,36 @@ let iA = 0;
 let iB = 0;
 //Tracklist
 
+// Aviso breve cuando no se puede añadir la canción
+function tracklistWarning(message) {
+    if (window.Swal) {
+        Swal.fire({ toast: true, position: "top", icon: "warning", title: message, showConfirmButton: false, timer: 2200 });
+    }
+}
+
+// Comprueba si se puede añadir una canción a la tracklist de una cara:
+// - el nombre no puede estar vacío (ni ser solo espacios)
+// - en un Single solo cabe una canción por cara
+function canAddTrack(text, currentCount, inputElement) {
+    if (text === "") {
+        tracklistWarning("Write the name of the song first.");
+        inputElement.focus();
+        return false;
+    }
+
+    if (btnformat.value === "SP" && currentCount >= 1) {
+        tracklistWarning("A single only has one song per side.");
+        return false;
+    }
+
+    return true;
+}
+
 UtlA.addEventListener('click', (e) => {
 
-    let inpSA = document.getElementById("inpSA").value;
+    const inputA = document.getElementById("inpSA");
+    let inpSA = inputA.value.trim();
+    if (!canAddTrack(inpSA, tsA.length, inputA)) return;
     
 
     iA++
@@ -101,7 +128,9 @@ DelA.addEventListener('click', (e) => {
 
 UtlB.addEventListener('click', (e) => {
 
-    let inpSB = document.getElementById("inpSB").value;
+    const inputB = document.getElementById("inpSB");
+    let inpSB = inputB.value.trim();
+    if (!canAddTrack(inpSB, tsB.length, inputB)) return;
 
 
     iB++
@@ -145,7 +174,9 @@ const extraSides = {
 
     document.getElementById("btnS" + letter).addEventListener("click", () => {
         const s = extraSides[letter];
-        const text = document.getElementById("inpS" + letter).value;
+        const input = document.getElementById("inpS" + letter);
+        const text = input.value.trim();
+        if (!canAddTrack(text, s.tracks.length, input)) return;
 
         s.count++;
         const song = letter + s.count + " " + text;
@@ -196,9 +227,27 @@ function updateFormatUI() {
 
     document.getElementById("formatShow").src = images[btnformat.value] || images.LP;
     document.getElementById("menuLeft").classList.toggle("is-lpx2", btnformat.value === "LPx2");
+
+    // Un Single solo tiene una canción por cara: el selector de archivos acepta uno solo
+    const single = btnformat.value === "SP";
+    [upA, upB, document.getElementById("sideC"), document.getElementById("sideD")].forEach(input => {
+        input.multiple = !single;
+    });
 }
 
-btnformat.addEventListener('change', updateFormatUI);
+// ¿Hay más de una canción o archivo por cara? (no cabe en un Single)
+function exceedsSingle() {
+    return tsA.length > 1 || tsB.length > 1 || lA.length > 1 || lB.length > 1;
+}
+
+btnformat.addEventListener('change', () => {
+    updateFormatUI();
+
+    // Se avisa sin borrar nada: el usuario decide qué quitar
+    if (btnformat.value === "SP" && exceedsSingle() && window.Swal) {
+        Swal.fire("Single Play", "A single only has one song per side. Remove the extra tracks with Delete Last Track and choose just one audio file per side.", "warning");
+    }
+});
 updateFormatUI();   // el navegador puede recordar el valor del selector al recargar
 
 //portada
@@ -265,6 +314,11 @@ btnRec.addEventListener("click", () => {
 
     if (!recName || !recArti || !recform || !recCover || trackA.length === 0 || trackB.length === 0 || recAside.length === 0 || recBside.length === 0 || missingExtra) {
         Swal.fire("Error", "Please fill in all fields and select at least one track for each side.", "error");
+        return;
+    }
+
+    if (recform === "SP" && exceedsSingle()) {
+        Swal.fire("Error", "A single only has one song per side. Remove the extra tracks and keep just one audio file per side.", "error");
         return;
     }
 
@@ -429,6 +483,17 @@ const curD = document.getElementById("curD");
 
 // Botón para alternar entre el disco A y el disco B (solo visible con un LPx2)
 const discBtn = document.getElementById("discSwap");
+
+// Pone en negrita, en la tracklist del panel "Currently Playing", la canción que está en curso
+const sideLists = { A: curA, B: curB, C: curC, D: curD };
+
+function updateNowPlaying(active) {
+    Object.keys(sideLists).forEach(letter => {
+        Array.from(sideLists[letter].children).forEach((li, index) => {
+            li.classList.toggle("now-playing", active && letter === side && index === currentTrack);
+        });
+    });
+}
 
 function fillTracklist(list, tracks) {
     list.innerHTML = "";
@@ -690,15 +755,19 @@ function onTrackEnded(audioList) {
         audio.reportedError = false;
         audio.src = audioUrl(audioList[currentTrack]);
         playAudio();
+        updateNowPlaying(true);
         return;
     }
+
+    currentTrack = audioList.length - 1;   // la cara terminó: la última canción sigue siendo la "actual"
 
     const next = nextSideAfterEnd();
 
     if (next) {
         playSide(next);
     } else {
-        showPausedState();   // fin de la cara: el brazo se levanta
+        showPausedState();        // fin de la cara: el brazo se levanta
+        updateNowPlaying(false);  // ya no hay ninguna canción en curso
     }
 }
 
@@ -731,6 +800,7 @@ function AudioStart() {
     audio.onerror = () => reportAudioError(audio.error);
     audio.onended = () => onTrackEnded(audioList);
     playAudio();
+    updateNowPlaying(true);
 
     return true;
 }
@@ -762,6 +832,7 @@ playBtn.addEventListener("click", () => {
             audio.userPaused = false;
             playAudio();
             showPlayingState();
+            updateNowPlaying(true);
         }
         else {
             audio.userPaused = true;
@@ -811,7 +882,7 @@ stopBtn.addEventListener("click", () => {
 // ----- Buscador de la colección -----
 // Filtra los discos mientras se escribe. Busca en el nombre del disco y en el artista,
 // sin distinguir mayúsculas ni acentos, y todas las palabras escritas deben coincidir.
-// Enter reproduce el primer resultado (igual que tocar su portada).
+// La tecla Enter no hace nada: los resultados ya se filtran mientras se escribe.
 const recSearch = document.getElementById("recSearch");
 const recNoResults = document.getElementById("recNoResults");
 
@@ -843,14 +914,9 @@ function filterCollection() {
 
 recSearch.addEventListener("input", filterCollection);
 
+// Enter se bloquea por completo: no selecciona discos ni dispara ninguna acción del navegador
 recSearch.addEventListener("keydown", (e) => {
-    if (e.key !== "Enter") return;
-
-    const first = document.querySelector("#rec-colect > div:not([hidden]) .recPanel");
-    if (first) {
-        first.click();
-        recSearch.blur();   // en el teléfono baja el teclado
-    }
+    if (e.key === "Enter") e.preventDefault();
 });
 
 const deleteBtn = document.getElementById("delete");
