@@ -1419,4 +1419,5 @@ html body .swal2-html-container {
 /* ---------- Canción en curso (tracklist del panel "Currently Playing") ---------- */
 .now-playing {
     font-weight: bold;
+   text-decoration: underline;
 }
